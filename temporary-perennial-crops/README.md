@@ -13,7 +13,7 @@ We recommend that you read the [Agriculture Appendix of the Algorithm Theoretica
 
 You can see the metodology for temporary and perrenial classification in the image bellow:
 
-<img src="../misc/separation-metodology.png">
+<img src="../assets/separation-metodology.png">
 
 ## How to use
 
