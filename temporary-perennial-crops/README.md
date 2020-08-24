@@ -1,5 +1,5 @@
 <div>
-    <img src='https://agrosatelite.com.br/wp-content/uploads/2019/02/logo_horizontal_negativo.png' height='auto' width='200' align='right'>
+    <img src='../assets/logo.png' height='auto' width='200' align='right'>
     <h1>Temporary and Perennial Crops</h1>
 </div>
 
@@ -10,6 +10,10 @@ Developed by ***Agrosatélite Geotecnologia Aplicada Ltda***.
 This folder contains the scripts to classify, separate and post-process the **Temporary Crop and Perenial Crop** classes. 
 
 We recommend that you read the [Agriculture Appendix of the Algorithm Theoretical Basis Document (ATBD)](https://mapbiomas.org/download-dos-atbds), since important informations about the classification and separation methodology can be found in there. 
+
+You can see the metodology for temporary and perrenial classification in the image bellow:
+
+<img src="../misc/separation-metodology.png">
 
 ## How to use
 
@@ -25,11 +29,13 @@ and three **Image Collections**:
  - MAPBIOMAS/C5/AGRICULTURE/TEMPORARY_PERENNIAL/RESULTS/**SEPARATION**
  - MAPBIOMAS/C5/AGRICULTURE/TEMPORARY_PERENNIAL/**REFERENCE_MAP**
 
-On the **REFERENCE_MAP** collection, you must provide reference maps for the sampling, with a property `year` with the year of the map.
+On the **REFERENCE_MAP** collection, you must provide reference maps for the sampling, with pixel values of 1 for sugar cane and 0 for other classes, and a property `year` with the year of the map.
 
 You also need to provide the training samples for the crops separation in **Feature Collection**:
 
  - MAPBIOMAS/C5/AGRICULTURE/TEMPORARY_PERENNIAL/**SAMPLES**
+
+ Each sample must have a property `class` with value 1 for annual crop sample and 2 for perrenial crop sample.
 
 ### Classification
 

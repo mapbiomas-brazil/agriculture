@@ -1,5 +1,5 @@
 <div>
-    <img src='https://agrosatelite.com.br/wp-content/uploads/2019/02/logo_horizontal_negativo.png' height='auto' width='200' align='right'>
+    <img src='../assets/logo.png' height='auto' width='200' align='right'>
     <h1>Sugar Cane</h1>
 </div>
 
@@ -24,7 +24,7 @@ and two **Image Collections**:
  - MAPBIOMAS/C5/AGRICULTURE/SUGARCANE/RESULTS/**RAW**
  - MAPBIOMAS/C5/AGRICULTURE/SUGARCANE/**REFERENCE_MAP**
 
-On the **REFERENCE_MAP** collection, you must provide reference maps for the sampling, with a property `year` with the year of the map.
+On the **REFERENCE_MAP** collection, you must provide reference maps for the sampling, with pixel values of 1 for sugar cane and 0 for other classes, and a property `year` with the year of the map.
 
 ### Classification
 

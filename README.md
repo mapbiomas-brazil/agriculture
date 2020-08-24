@@ -1,6 +1,6 @@
 
 <div>
-    <img src='https://agrosatelite.com.br/wp-content/uploads/2019/02/logo_horizontal_negativo.png' height='auto' width='200' align='right'>
+    <img src='./assets/logo.png' height='auto' width='200' align='right'>
     <h1>Agriculture</h1>
 </div>
 

@@ -5,7 +5,7 @@ var input = 'users/your_username/MAPBIOMAS/C5/TEMPORARY_PERENNIAL/RESULTS/SEPARA
 var output = 'users/your_username/MAPBIOMAS/C5/TEMPORARY_PERENNIAL/RESULTS/PERENNIAL_CROP_TEMPORAL_SPATIAL_FILTERED';
 
 // set the pixel value of the perennial crop as noted on the crops separation map:
-var classOfInterest = 3
+var classOfInterest = 2
 
 // set the range of years you want to filter:
 var startYear = 2016
