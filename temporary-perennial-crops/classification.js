@@ -4,7 +4,7 @@ var api = require('users/your_username/repository_name:utils/api.js');
 /************* SETTINGS **************/
 
 // set the output path for the classification results:
-var outputCollection = 'users/your_username/MAPBIOMAS/C5/AGRICLUTURE/TEMPORARY_PERENNIAL/RESULTS/RAW';
+var outputCollection = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/TEMPORARY_PERENNIAL/RESULTS/RAW';
 
 // set the years you want to classify:
 var years = [2018];
@@ -67,7 +67,7 @@ var extraFeatureSpace = [
 var imageCollection = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA");
 
 // set the path to you reference map that will be used for sampling
-var referenceCollection = ee.ImageCollection("users/your_username/MAPBIOMAS/C5/AGRICLUTURE/TEMPORARY_PERENNIAL/REFERENCE_MAP");
+var referenceCollection = ee.ImageCollection("users/your_username/MAPBIOMAS/C5/AGRICULTURE/TEMPORARY_PERENNIAL/REFERENCE_MAP");
 
 var gridCollection = ee.FeatureCollection("users/agrosatelite_mapbiomas/COLECAO_5/PUBLIC/GRIDS/BRASIL");
 

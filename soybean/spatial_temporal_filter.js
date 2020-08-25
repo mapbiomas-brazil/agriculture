@@ -1,8 +1,8 @@
 // set the input path to the raw classification result:
-var input = 'users/yout_username/MAPBIOMAS/C5/AGRICLUTURE/SOYBEAN/RESULTS/RAW'
+var input = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/SOYBEAN/RESULTS/RAW'
 
 // set the path for the filtered result:
-var output = 'users/yout_username/MAPBIOMAS/C5/AGRICLUTURE/SOYBEAN/SOYBEAN/RESULTS/TEMPORAL_SPATIAL_FILTERED'
+var output = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/SOYBEAN/RESULTS/TEMPORAL_SPATIAL_FILTERED'
 
 // set the years interval you want to filter:
 var startYear = 2017

@@ -1,5 +1,3 @@
-var cloudLib = require("users/username/repository:utils/cloud.js");
-    
 var MODIS_COL = "MODIS/006/MOD09A1";
 var MODIS_CADENCE = 8;
 var MODIS_CLOUDMASK = mod09a1MaskClouds;
@@ -345,7 +343,7 @@ function getNormCollection(landsatCollection){
     .map(function(image){
       var newImage = image;
       
-      var qualityFlag = ee.Image(cloudLib.cloudScore(newImage))
+      var qualityFlag = ee.Image(cloudScore(newImage))
         .rename("QF");
       
       var ndvi = image.normalizedDifference(["NIR", "RED"])

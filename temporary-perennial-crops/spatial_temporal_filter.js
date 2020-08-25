@@ -1,8 +1,8 @@
 // set the input path to the raw classification result:
-var input = 'users/your_username/MAPBIOMAS/C5/AGRICLUTURE/TEMPORARY_PERENNIAL/RESULTS/RAW';
+var input = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/TEMPORARY_PERENNIAL/RESULTS/RAW';
 
 // set the path for the filtered result:
-var output = 'users/your_username/MAPBIOMAS/C5/AGRICLUTURE/TEMPORARY_PERENNIAL/RESULTS/TEMPORAL_SPATIAL_FILTERED';
+var output = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/TEMPORARY_PERENNIAL/RESULTS/TEMPORAL_SPATIAL_FILTERED';
 
 // set the year range you want to apply this script:
 var startYear = 2016

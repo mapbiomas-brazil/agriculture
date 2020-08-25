@@ -4,7 +4,7 @@ var api = require('users/your_username/repository_name:utils/api.js');
 /************* SETTINGS **************/
 
 // set the output path for the classification results:
-var outputCollection = 'users/your_username/MAPBIOMAS/C5/AGRICLUTURE/SUGARCANE/RESULTS/RAW';
+var outputCollection = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/SUGARCANE/RESULTS/RAW';
 
 // set the years you want to classify:
 var years = [2019];
@@ -54,7 +54,7 @@ var featureSpace = [
 var imageCollection = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA");
 
 // set the collection you want to use to create the mosaics:
-var referenceCollection = ee.ImageCollection("users/your_username/MAPBIOMAS/C5/AGRICLUTURE/SUGARCANE/REFERENCE_MAP");
+var referenceCollection = ee.ImageCollection("users/your_username/MAPBIOMAS/C5/AGRICULTURE/SUGARCANE/REFERENCE_MAP");
 
 var gridCollection = ee.FeatureCollection("users/agrosatelite_mapbiomas/COLECAO_5/PUBLIC/GRIDS/BRASIL");
 

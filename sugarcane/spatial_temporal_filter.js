@@ -1,8 +1,8 @@
 // set the input path to the raw classification result:
-var input = 'users/your_username/MAPBIOMAS/C5/AGRICLUTURE/SUGARCANE/RESULTS/RAW';
+var input = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/SUGARCANE/RESULTS/RAW';
 
 // set the path for the filtered result:
-var output = 'users/your_username/MAPBIOMAS/C5/AGRICLUTURE/SUGARCANE/RESULTS/TEMPORAL_SPATIAL_FILTERED';
+var output = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/SUGARCANE/RESULTS/TEMPORAL_SPATIAL_FILTERED';
 
 // set the years interval you want to filter
 var startYear = 2015

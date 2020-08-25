@@ -1,8 +1,8 @@
 // set the input path to the raw separation result:
-var input = 'users/your_username/MAPBIOMAS/C5/TEMPORARY_PERENNIAL/RESULTS/SEPARATION';
+var input = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/TEMPORARY_PERENNIAL/RESULTS/SEPARATION';
 
 // set the path for the temporary crop filtered result:
-var output = 'users/your_username/MAPBIOMAS/C5/TEMPORARY_PERENNIAL/RESULTS/PERENNIAL_CROP_TEMPORAL_SPATIAL_FILTERED';
+var output = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/TEMPORARY_PERENNIAL/RESULTS/PERENNIAL_CROP_TEMPORAL_SPATIAL_FILTERED';
 
 // set the pixel value of the perennial crop as noted on the crops separation map:
 var classOfInterest = 2

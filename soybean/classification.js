@@ -7,7 +7,7 @@ var normalization = require("users/your_username/repository:utils/normalization.
 /************* SETTINGS **************/
 
 // set the output path for the classification results:
-var outputCollection = 'users/your_username/MAPBIOMAS/C5/AGRICLUTURE/SOYBEAN/RESULTS/RAW'
+var outputCollection = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/SOYBEAN/RESULTS/RAW'
 
 // set the years you want to classify:
 var years = [2017, 2018, 2019];
@@ -93,7 +93,7 @@ var gridCollection = ee.FeatureCollection("users/agrosatelite_mapbiomas/COLECAO_
 var randomForestTrees = 100; 
 
 // set the path to the training samples:
-var trainingSamples = ee.FeatureCollection("users/your_username/MAPBIOMAS/C5/AGRICLUTURE/SOYBEAN/SAMPLES");
+var trainingSamples = ee.FeatureCollection("users/your_username/MAPBIOMAS/C5/AGRICULTURE/SOYBEAN/SAMPLES");
 
 /************* END SETTINGS **************/
 
@@ -174,7 +174,7 @@ years.forEach(function(year) {
     // Classification //
     
     var classified = mosaic.classify(classifier)
-      .set('YEAR', year)
+      .set('year', year)
       .rename(['classification'])
 
     // Visualization //
