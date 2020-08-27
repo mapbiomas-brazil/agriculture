@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-# agriculture
-=======
 
 <div>
     <img src='./assets/logo.png' height='auto' width='200' align='right'>
@@ -25,4 +22,3 @@ First, you need to copy the scripts in this repository  (including those in [uti
  - [Soybean](./soybean) instructions;
  - [Sugar Cane](./sugarcane) instructions.
  - [Other Temporary and Perennial Crops](./temporary-perennial-crops) instructions;
->>>>>>> mapbiomas50
