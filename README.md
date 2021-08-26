@@ -7,13 +7,16 @@
 Developed by ***Agrosatélite Geotecnologia Aplicada Ltda***.
 
 ## About
-This repository contains the scripts used in the classification of the agriculture theme, for the Collection 5 of Mapbiomas. We recommend that you read the  [Agriculture Appendix of the Algorithm Theoretical Basis Document (ATBD)](https://mapbiomas.org/download-dos-atbds), since important informations about the classification methodology can be found in there. For this collection, we have the following agriculture subclasses:
+This repository contains the scripts used in the classification of the agriculture theme, for the Collection 6 of Mapbiomas. We recommend that you read the  [Agriculture Appendix of the Algorithm Theoretical Basis Document (ATBD)](https://mapbiomas.org/download-dos-atbds), since important informations about the classification methodology can be found in there. For this collection, we have the following agriculture subclasses:
 
  - Temporary Crop
-	- Soybean (2000 - 2019)
+	- Soybean
 	- Sugar Cane
-	- Other Temporary Crop (includes soybean before 2000)
+	- Other Temporary Crop
  - Perennial Crop
+  - Coffee
+	- Citrus
+	- Other Perennial Crop
 
 ## How to use
 
@@ -21,4 +24,8 @@ First, you need to copy the scripts in this repository  (including those in [uti
 																						 
  - [Soybean](./soybean) instructions;
  - [Sugar Cane](./sugarcane) instructions.
- - [Other Temporary and Perennial Crops](./temporary-perennial-crops) instructions;
+ - [Other Temporary Crops](./temporary_crops) instructions;
+ - [Coffee](./coffee) instructions;
+ - [Citrus](./citrus) instructions.
+ - [Other Perennial Crop](./perennial_crops) instructions;
+

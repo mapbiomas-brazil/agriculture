@@ -1,146 +1,66 @@
+// Set the path to the temporal_spatial_filters.js script you copied to your GEE account:
+var filters = require('users/your_username/repository:utils/temporal_spatial_filters.js');
+
+var temporal = filters.temporal;
+var spatial = filters.spatial;
+
 // set the input path to the raw classification result:
-var input = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/SOYBEAN/RESULTS/RAW'
+var input = 'users/your_username/MAPBIOMAS/C6/AGRICULTURE/SOYBEAN/RESULTS/RAW'
 
 // set the path for the filtered result:
-var output = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/SOYBEAN/RESULTS/TEMPORAL_SPATIAL_FILTERED'
+var output = 'users/your_username/MAPBIOMAS/C6/AGRICULTURE/SOYBEAN/RESULTS/TEMPORAL_SPATIAL_FILTERED'
 
-// set the years interval you want to filter:
-var startYear = 2017
-var endYear = 2019
+var brasil = ee.Image('projects/mapbiomas-workspace/AUXILIAR/ESTATISTICAS/COLECAO5/country-raster')
 
-var results = ee.List.sequence(startYear, endYear)
-	.map(function(year) {
-		var yearlyMosaic = ee.ImageCollection(input)
+var collection = ee.ImageCollection(input)
+
+var years = ee.List([collection.aggregate_min('year'), collection.aggregate_max('year')]).getInfo()
+
+var startYear = years[0]
+var endYear = years[1]
+
+collection = ee.List.sequence(startYear, endYear)
+  .map(function (year) {
+    var yearlyMosaic = collection
       .filterMetadata('year', 'equals', year)
       .or()
       .set('year', year);
 
-		return yearlyMosaic
-	})
+    return yearlyMosaic
+  })
 
-results = ee.ImageCollection(results)
+collection = ee.ImageCollection(collection)
 
-var brasilMask = ee.Image("users/agrosatelite_mapbiomas/COLECAO_5/PUBLIC/GRIDS/BIOMAS_IBGE_250K_BUFFER");
-
-var offsets = [1, 1]
-var threshold = 2
-var thresholdFirstYear = 2
-var thresholdLastYear = 1
-
-var kernelGrid = [
-  [1, 1, 1, 1, 1],
-  [1, 2, 2, 2, 1],
-  [1, 2, 2, 2, 1],
-  [1, 2, 2, 2, 1],
-  [1, 1, 1, 1, 1]
+var filtersToApply = [
+  spatial.build(spatial.minConnnectedPixels(6)),
+  temporal.build(temporal.getMovingWindow(startYear + 1, endYear - 1, 3), temporal.thresholdFilter(2)),
+  spatial.build(spatial.minConnnectedPixels(6)),
 ]
-          
-var kernel = ee.Kernel.fixed(5, 5, kernelGrid, -2, -2, false)
 
-/*
- * Functions
- */
+var filteredCollection = filters.applyFilters(filtersToApply, collection);
 
+var firstYear = filteredCollection.filterMetadata('year', 'equals', startYear + 1).first();
 
-function getWindow(col, year, offsets) {
-  var start = year.subtract(offsets[0])
-  var end = year.add(offsets[1])
-  
-  return col.filter(ee.Filter.rangeContains('year', start, end))
-}
+filteredCollection = filteredCollection
+  .filter(ee.Filter.inList('year', [startYear]).not())
+  .merge(ee.ImageCollection([
+    firstYear.set('year', startYear)
+  ]))
+  .sort('year')
 
-function applySpatialFilter(thisYear) {
-  var filtered = thisYear.unmask().convolve(kernel).gte(15).unmask()
-  return ee.Image(filtered).set('year', thisYear.getNumber('year'))
-}
+var raw = filters.toBandsByYear(collection)
+var filtered = filters.toBandsByYear(filteredCollection)
 
-function applyTemporalFilter(threshold) {
-  return function (thisYear, processed) {
-    thisYear = ee.Image(thisYear).unmask()
-    processed = ee.ImageCollection(processed)    
-    
-    var year = thisYear.getNumber('year')
-    
-    var window = getWindow(processed, year, offsets)
-    var sum = window.sum().unmask()
-    
-    var filtered = sum.unmask().gte(threshold).set('year', year)
-    
-    return processed
-      .filterMetadata('year', 'not_equals', year)
-      .merge(ee.ImageCollection([ filtered ]))
-  }
-}
+var visYear = endYear
 
-function toBands(collection) {
-  var renamedBands = collection.map(function(image) {
-    var year = image.getNumber('year').int()
-    return image.rename(ee.String(year))
-  })
-  
-  var image = renamedBands.toBands()
-  
-  var newNames = image.bandNames().map(function(name) {
-    return ee.String('classification_').cat(ee.String(name).split('_').getString(-1))
-    // return ee.String(name).split('_').getString(-1)
-  })
-  
-  return image.rename(newNames)
-    .select(newNames.sort())
-}
-
-function filterByYear(collection, year) {
-  return collection.filterMetadata('year', 'equals', year).first()
-}
-
-/*
- * Post processing
- */
-
-var spatialFiltered = results.map(applySpatialFilter).sort('year')
-
-var firstYear = filterByYear(spatialFiltered, startYear)
-var lastYear = filterByYear(spatialFiltered, endYear)
-
-var temporalFiltered1 = ee.ImageCollection(
-  spatialFiltered
-    .filter(ee.Filter.rangeContains('year', startYear + 1, endYear - 1))
-    .iterate(applyTemporalFilter(threshold), spatialFiltered)
-)
-
-var temporalFiltered2 = ee.ImageCollection(
-  spatialFiltered
-    .filterMetadata('year', 'equals', startYear)
-    .iterate(applyTemporalFilter(thresholdFirstYear), temporalFiltered1)
-)
-
-var temporalFiltered3 = ee.ImageCollection(
-  spatialFiltered
-    .filterMetadata('year', 'equals', endYear)
-    .iterate(applyTemporalFilter(thresholdLastYear), temporalFiltered2)
-)
-
-spatialFiltered = toBands(spatialFiltered)
-
-var finalResult = toBands(temporalFiltered3)
-var rawResult = toBands(results).unmask()
-
-var vis = {
-  bands: ['classification_' + endYear],
-  min: 0,
-  max: 1,
-  palette: ['WHITE', 'BLACK'],
-  format: 'png'
-}
-
-Map.addLayer(rawResult.unmask(), vis, 'Raw')
-Map.addLayer(finalResult.unmask(), vis, 'Temporal-Spatial Filtered')
+Map.addLayer(raw.selfMask(), { bands: 'b' + visYear, palette: ['RED'] }, 'Raw ' + visYear)
+Map.addLayer(filtered.selfMask(), { bands: 'b' + visYear, palette: ['BLUE'] }, 'Filtered ' + visYear)
 
 Export.image.toAsset({
-  image: finalResult, 
-  description: 'SOYBEAN_POST_PROCESSING', 
-  assetId: output, 
-  region: brasilMask.geometry(), 
-  scale: 30, 
+  image: filtered.unmask().byte(),
+  description: 'SOYBEAN_SPATIAL_TEMPORAL_FILTER',
+  assetId: output,
+  region: brasil.geometry(30).bounds(30),
+  scale: 30,
   maxPixels: 10e10
 })

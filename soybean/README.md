@@ -17,15 +17,15 @@ First, you need to copy the scripts in this folder and in the [utils folder](../
 
 Then, in your **GEE** account, go to the **Assets tab** and create the following directory structure:
 
- - MAPBIOMAS/C5/AGRICULTURE/SOYBEAN/RESULTS
+ - MAPBIOMAS/C6/AGRICULTURE/SOYBEAN/RESULTS
 
 and create one **Image Collections**:
 
- - MAPBIOMAS/C5/AGRICULTURE/SOYBEAN/RESULTS/**RAW**
+ - MAPBIOMAS/C6/AGRICULTURE/SOYBEAN/RESULTS/**RAW**
  
 You must provide the training samples in a **Feature Collection**:
 
- - MAPBIOMAS/C5/AGRICULTURE/SOYBEAN/**SAMPLES**
+ - MAPBIOMAS/C6/AGRICULTURE/SOYBEAN/**SAMPLES**
 
 
 ### Classification 
@@ -36,7 +36,7 @@ To run the classification, follow these steps:
 
 2. On **line 2** (variable `api`), set the path to the [api.js](../utils/api.js) script you copied to your GEE account;
 
-3. On **line 5** (variable `normalization`), set the path to the [normalization.js](../utils/normalization.js) script you copied to your GEE account;
+3. On **line 5** (variable `get16Dayproduct`), set the path to the [normalization.js](../utils/normalization.js) script you copied to your GEE account;
 
 4. On **line 10** (variable `outputCollection`), set the output path for the classification results;
 
@@ -56,10 +56,10 @@ To run the post-processing, follow these steps:
 
 1. Open the script **agriculture/soybean/temporal_spatial_filter.js**;
 
-2. On **line 2** (variable `input`), set the input path to the raw classification result;
+2. On **line 2** (variable `filters`), set the path to the [temporal_spatial_filters.js](../utils/temporal_spatial_filters.js) script you copied to your GEE account;
 
-3. On **line 5** (variable `output`), set the path for the filtered result;
+3. On **line 8** (variable `input`), set the path to the raw classification result;
 
-4. On **lines 8 and 9** (variables `startYear` and `endYear`), set the years interval you want to filter;
+4. On **line 11** (variable `output`), set the path for the filtered result;
 
 5. Run the script.

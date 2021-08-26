@@ -1,132 +1,79 @@
+// Set the path to the temporal_spatial_filters.js script you copied to your GEE account:
+var filters = require('users/your_username/repository:utils/temporal_spatial_filters.js');
+
+var temporal = filters.temporal;
+var spatial = filters.spatial;
+
 // set the input path to the raw classification result:
-var input = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/SUGARCANE/RESULTS/RAW';
+var input = 'users/your_username/MAPBIOMAS/C6/AGRICULTURE/SUGARCANE/RESULTS/RAW';
 
 // set the path for the filtered result:
-var output = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/SUGARCANE/RESULTS/TEMPORAL_SPATIAL_FILTERED';
+var output = 'users/your_username/MAPBIOMAS/C6/AGRICULTURE/SUGARCANE/RESULTS/TEMPORAL_SPATIAL_FILTERED';
 
-// set the years interval you want to filter
-var startYear = 2015
-var endYear = 2019
+var brasil = ee.Image('projects/mapbiomas-workspace/AUXILIAR/ESTATISTICAS/COLECAO5/country-raster')
 
-var brasilMask = ee.Image("users/agrosatelite_mapbiomas/COLECAO_5/PUBLIC/GRIDS/BIOMAS_IBGE_250K_BUFFER");
+var collection = ee.ImageCollection(input)
 
-var classOfInterest = 1;
-var years = range(startYear, endYear - startYear + 1);
+var years = ee.List([collection.aggregate_min('year'), collection.aggregate_max('year')]).getInfo()
 
-/** TEMPORAL FILTER SETTINGS **/
-var offset = 2;
-var globalThreshold = 2;
+var startYear = years[0]
+var endYear = years[1]
 
-/** SPATIAL FILTER SETTINGS **/
-var minConnectPixel = 6
-
-var imageCollection = ee.List.sequence(startYear, endYear)
-  .map(function(year) {
-    var yearMosaic = ee.ImageCollection(input)
+collection = ee.List.sequence(startYear, endYear)
+  .map(function (year) {
+    var yearlyMosaic = collection
       .filterMetadata('year', 'equals', year)
-      .max();
-    
-    return yearMosaic.set('year', year)
+      .or()
+      .set('year', year);
+
+    return yearlyMosaic
   })
 
-var collection = ee.ImageCollection(imageCollection).sort('year').toList(40);
-
-function range(start, count) {
-  return Array.apply(0, Array(count))
-    .map(function (element, index) { 
-      return index + start;  
-  });
-}
-
-var breakList = function(list, index, offset, min, max, threshold){
-  var start = index - offset
-  var end = index + offset
-  if(start < min){
-    threshold = 1 + threshold + start
-    start = min
-  }
-  if(end > max){
-    threshold = 1 + threshold + (max - end)
-    end = max
-  }
-  var left = list.slice(start, index)
-  var center = ee.Image(list.get(index))
-  var right = list.slice(index + 1, end + 1)
-  return [left, center, right, threshold]
-}
-
-var images = [];
-
-for(var index=0; index <= years.length - 1; index++) {
-  
-  /** TEMPORAL FILTER **/
-  
-  var nodes = breakList(collection, index, offset, 0, years.length - 1, globalThreshold);
-  var left = nodes[0] 
-  var center = nodes[1] 
-  var right = nodes[2] 
-  var threshold = nodes[3]
-  
-  var year = years[index];
-
-  center = center.unmask(null).eq(classOfInterest);
-  left = ee.ImageCollection(left);
-  right = ee.ImageCollection(right);
-
-  var sides = ee.ImageCollection(left.merge(right)).map(function(img){
-    return ee.Image(img).eq(classOfInterest);
-  }).sum();
-  
-  var mask = center.add(sides.eq(0)).neq(2);
-  var image = center.add(sides).gte(threshold + 1);
-
-  var temporalFiltered = ee.Image(center.add(image)).updateMask(mask).gte(1)
-    .set('year', year);
-
-  collection = collection.set(index, temporalFiltered);
-
-  /** SPATIAL_FILTER **/
-
-  var kernel_ = [[1, 1, 1, 1, 1],
-            [1, 2, 2, 2, 1],
-            [1, 2, 2, 2, 1],
-            [1, 2, 2, 2, 1],
-            [1, 1, 1, 1, 1]];
-            
-  var kernel = ee.Kernel.fixed(5, 5, kernel_, -2, -2, false);
-  
-  var temporalSpatialFiltered = temporalFiltered
-    .unmask(null)
-    .convolve(kernel)
-    .gte(15)
-    .selfMask();
-   
-  images.push(temporalSpatialFiltered.rename("classification_" + year));
-}
-
-var image = ee.Image(images);
-
-var vis = {
-  bands: ['classification_' + endYear],
-  min: 0,
-  max: 1,
-  palette: ['WHITE', 'BLACK'],
-  format: 'png'
-}
-
-var raw = ee.ImageCollection(imageCollection).filterMetadata('year', 'equals', endYear).first().rename('classification_' + endYear)
-
-Map.addLayer(raw.unmask(), vis, 'Raw')
-Map.addLayer(image.unmask(), vis, 'Temporal-Spatial Filtered')
+collection = ee.ImageCollection(collection)
 
 
-var filename = 'suga_cane_temporal_filter';
+var filtersToApply = [
+  spatial.build(spatial.minConnnectedPixels(6)),
+  temporal.build(temporal.getMovingWindow(startYear + 1, startYear + 1, 3), temporal.thresholdFilter(2)), // 3 years window, 1986 only
+  temporal.build(temporal.getMovingWindow(startYear + 2, endYear - 2, 5), temporal.thresholdFilter(3)), // 5 years window, 1987 to 2018
+  temporal.build(temporal.getMovingWindow(endYear - 1, endYear - 1, 3), temporal.thresholdFilter(2)), // 3 years window, 2019 only
+  spatial.build(spatial.minConnnectedPixels(6)),
+]
+
+var filteredCollection = filters.applyFilters(filtersToApply, collection);
+
+var firstYearImg = filteredCollection.filter(ee.Filter.inList('year', [startYear, startYear + 1])).and();
+var lastYearImg = filteredCollection.filter(ee.Filter.inList('year', [endYear - 1, endYear])).and();
+
+filteredCollection = filteredCollection
+  .filter(ee.Filter.inList('year', [startYear, endYear]).not())
+  .merge(ee.ImageCollection([
+    firstYearImg.set('year', startYear),
+    lastYearImg.set('year', endYear)
+  ]))
+  .sort('year')
+
+// to ensure consistence
+filtersToApply = [
+  temporal.build(temporal.getMovingWindow(startYear + 1, endYear - 1, 3), temporal.thresholdFilter(2)), // 3 years window
+]
+
+filteredCollection = filters.applyFilters(filtersToApply, filteredCollection);
+
+var raw = filters.toBandsByYear(collection)
+var filtered = filters.toBandsByYear(filteredCollection)
+
+var visYear = endYear
+
+Map.addLayer(raw.selfMask(), { bands: 'b' + visYear, palette: ['RED'] }, 'Raw ' + visYear)
+Map.addLayer(filtered.selfMask(), { bands: 'b' + visYear, palette: ['BLUE'] }, 'Filtered ' + visYear)
 
 Export.image.toAsset({
-  image: image.byte(),
-  description: filename,
+  image: filtered.unmask().byte(),
+  description: 'TEMPORARY_CROPS_TEMPORAL_SPATIAL_FILTER',
   assetId: output,
+  region: brasil.geometry(30).bounds(30),
   scale: 30,
-  region: brasilMask.geometry(),
-  maxPixels: 1.0E13,
-});
+  maxPixels: 10e10
+})
+
