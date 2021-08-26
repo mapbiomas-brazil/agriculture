@@ -14,7 +14,7 @@ This repository contains the scripts used in the classification of the agricultu
 	- Sugar Cane
 	- Other Temporary Crop
  - Perennial Crop
-  - Coffee
+	- Coffee
 	- Citrus
 	- Other Perennial Crop
 
