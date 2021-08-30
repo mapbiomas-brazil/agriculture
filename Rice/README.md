@@ -9,7 +9,7 @@ Developed by ***Agrosatélite Geotecnologia Aplicada***.
 
 This folder contains the scripts to classify and post-process the **irrigated rice** subclass.
 
-We recommend that you read the [Irrigation Appendix of the Algorithm Theoretical Basis Document (ATBD)](https://mapbiomas.org/download-dos-atbds), since important informations about the classification methodology can be found in there.
+We recommend that you read the [Agriculture Appendix of the Algorithm Theoretical Basis Document (ATBD)](https://mapbiomas.org/download-dos-atbds), since important informations about the classification methodology can be found in there.
 
 ### How to use
 
