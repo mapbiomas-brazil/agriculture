@@ -25,7 +25,7 @@ First, you need to copy the scripts in this repository  (including those in [uti
 																						 
  - [Soybean](./soybean) instructions;
  - [Sugar Cane](./sugarcane) instructions;
- - [Rice] (./Rice) instructions;
+ - [Rice](./Rice) instructions;
  - [Other Temporary Crops](./temporary_crops) instructions;
  - [Coffee](./coffee) instructions;
  - [Citrus](./citrus) instructions;
