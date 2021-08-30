@@ -1,6 +1,6 @@
 <div>
     <img src='https://agrosatelite.com.br/wp-content/uploads/2019/02/logo_horizontal_negativo.png' height='auto' width='200' align='right'>
-    <h1>Irrigated rice</h1>
+    <h1>Rice (Irrigated)</h1>
 </div>
 
 Developed by ***Agrosatélite Geotecnologia Aplicada***.
