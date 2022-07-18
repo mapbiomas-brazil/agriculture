@@ -7,10 +7,11 @@
 Developed by ***Agrosatélite Geotecnologia Aplicada Ltda***.
 
 ## About
-This repository contains the scripts used in the classification of the agriculture theme, for the Collection 6 of Mapbiomas. We recommend that you read the  [Agriculture Appendix of the Algorithm Theoretical Basis Document (ATBD)](https://mapbiomas.org/download-dos-atbds), since important informations about the classification methodology can be found in there. For this collection, we have the following agriculture subclasses:
+This repository contains the scripts used in the classification of the agriculture theme, for the Collection 7 of Mapbiomas. We recommend that you read the  [Agriculture Appendix of the Algorithm Theoretical Basis Document (ATBD)](https://mapbiomas.org/download-dos-atbds), since important informations about the classification methodology can be found in there. For this collection, we have the following agriculture subclasses:
 
  - Temporary Crop
 	- Soybean
+	- Cotton
 	- Sugar Cane
 	- Rice
 	- Other Temporary Crop
@@ -23,10 +24,9 @@ This repository contains the scripts used in the classification of the agricultu
 
 First, you need to copy the scripts in this repository  (including those in [utils folder](./utils)) to your Google Earth Engine (**GEE**) account. Then, you can follow the instructions for every subclass in the links bellow:
 																						 
- - [Soybean](./soybean) instructions;
+ - [Soybean, Cotton and Other Temporary Crops](./soybean_cotton_other_temporary_crops) instructions;
  - [Sugar Cane](./sugarcane) instructions;
- - [Rice](./Rice) instructions;
- - [Other Temporary Crops](./temporary_crops) instructions;
+ - [Rice](./rice) instructions;
  - [Coffee](./coffee) instructions;
  - [Citrus](./citrus) instructions;
  - [Other Perennial Crop](./perennial_crops) instructions.

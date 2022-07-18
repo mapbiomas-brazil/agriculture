@@ -1,0 +1,67 @@
+/**
+ * @name
+ *      TEMPORARY CROPS FINAL PRODUCT C7 (SOY, COTTON and OTHER TEMPORARY CROPS)
+ * 
+ * @description
+ *      Uses the filtered Temporary Crops result as a mask for the raw classification,
+ *      in order to preserve occasional occurance of crops such as cotton.
+ *  
+ * @author
+ *      Agrosatélite
+ *      mapbiomas@agrosatelite.com.br
+ *
+ * @version
+ *  MapBiomas Collection 7.0
+ * 
+ */
+
+
+var brasil = ee.Image('projects/mapbiomas-workspace/AUXILIAR/ESTATISTICAS/COLECAO5/country-raster')
+
+
+// Set output destination and filename
+var outputName = 'users/your_username/MAPBIOMAS/C7/AGRICULTURE/TEMPORARY_CROPS/RESULTS/ANNUAL_CLASSIFICATION'
+
+
+// Raw classification
+var raw = ee.ImageCollection('users/your_username/MAPBIOMAS/C7/AGRICULTURE/TEMPORARY_CROPS/RESULTS/RAW')
+
+var start_year = raw.aggregate_min('year')
+var end_year = raw.aggregate_max('year')
+
+
+var names = ee.List.sequence(start_year, end_year).map(function(year) {
+  return ee.String('b').cat(ee.Number(year).int())
+})
+
+
+// Filtered Temporary Crops
+var filtered_tc = ee.Image('users/your_username/MAPBIOMAS/C7/AGRICULTURE/TEMPORARY_CROPS/RESULTS/TEMPORAL_SPATIAL_FILTERED')
+                      
+
+
+// Masked Temporary Crops 
+var masked_tc = raw.map(function(img){
+      return img.remap([1,2,3],[39, 41, 62]).copyProperties(img)
+    }).sort('year')
+      .toBands()
+      .rename(names)
+      .updateMask(filtered_tc.select(names))
+
+
+// Visual
+var vis_year = 2020
+print('Final Map', masked_tc)
+Map.addLayer(masked_tc, {bands:'b'+vis_year, palette:['red','green','blue']}, 'Final Map', true)
+
+
+// Export
+Export.image.toAsset({
+  image: masked_tc.byte().unmask(),
+  description: 'TEMPORARY_CROPS_ANNUAL_CLASSIFICATION',
+  assetId: outputName,
+  region: brasil.geometry(30),
+  scale: 30,
+  maxPixels: 10e10,
+  pyramidingPolicy: {'.default': 'mode'},
+})

@@ -1,6 +1,6 @@
 /**
  * @name
- *      MapBiomas Save Mosaic to map irrigated rice
+ *      SAVE MOSAIC FOR IRRIGATED RICE CLASSIFICATION
  * 
  * @description
  *  
@@ -9,7 +9,7 @@
  *      mapbiomas@agrosatelite.com.br
  *
  * @version
- *  MapBiomas Colection 6.0
+ *  MapBiomas Collection 7.0
  * 
  */
  
@@ -181,7 +181,7 @@ var settings_uf = {
   },
   
   
-}
+} 
 
 
 /************* END SETTINGS **************/
@@ -294,8 +294,8 @@ var select = ui.Select({
 
 var header = ui.Label('Save Mosaic to Irrigated Rice  classification -  MapBiomas Collection 6', {fontSize: '24px', color: 'blue'});
 
-var text2 = ui.Label('Choose state to save mosaic: ', {fontSize: '14px', color: 'black'});
-var text3 = ui.Label('click on a polygon to save the mosaic to the drive, then go to colab and run sorting of the saved mosaic using U-net.', {fontSize: '12px', color: 'black'});
+var text2 = ui.Label('Choose a state to save mosaic: ', {fontSize: '14px', color: 'black'});
+var text3 = ui.Label('Click on a polygon to export the mosaic to your Google Drive, then go to Google Colab and run sorting of the saved mosaic using U-net.', {fontSize: '12px', color: 'black'});
 
 var toolPanel = ui.Panel([header, text2], 'flow', {width: '300px'});
 ui.root.widgets().add(toolPanel);

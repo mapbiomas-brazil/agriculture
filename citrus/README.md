@@ -17,20 +17,20 @@ First, you need to copy the scripts in this folder (javascript only) and in the 
 
 Then, in your **GEE** account, go to the **Assets tab**, create the following directory structure:
 
- - MAPBIOMAS/C6/AGRICULTURE/CITRUS/RESULTS
+ - MAPBIOMAS/C7/AGRICULTURE/CITRUS/RESULTS
 
 and create one **Image Collections**:
 
- - MAPBIOMAS/C6/AGRICULTURE/CITRUS/RESULTS/**RAW**
+ - MAPBIOMAS/C7/AGRICULTURE/CITRUS/RESULTS/**RAW**
 
 ### Mosaics
 To generate mosaics for classification, follow these steps:
 
-1. Open the script **agriculture/citrus/classification_mosaics.js**;
+1. Open the script **agriculture/citrus/01_save_mosaics.js**;
 
-2. On **line 2** you can change the region you want to classify by importing the geometry to the map;
+2. On **line 18** you can change the region you want to classify by importing the geometry to the map;
 
-3. On **line 18** (variable `year`, may be **line 6** if you imported the geometry to the map), set the year you want to classify;
+3. On **line 27** (variable `year`, may be another line if you imported the geometry to the map), set the year you want to classify;
 
 4. Run the script, a mosaic will be exported to your Google Drive in folder **MAPBIOMAS-PRIVATE-CITRUS**;
 
@@ -48,10 +48,12 @@ To run the post-processing, follow these steps:
 
 3. You must set a `year` property to every classification result you uploaded, with it's respective year;
 
-4. Open the script **agriculture/citrus/temporal_spatial_filter.js**;
+4. Open the script **agriculture/citrus/03_spatial_temporal_filter.js**;
 
-5. On **line 7** (variable `input`), set the path to the raw classification result;
+5. On **line 17** (variable `filters`), set the path to the [temporal_spatial_filters.js](../utils/temporal_spatial_filters.js) script you copied to your GEE account;
 
-6. On **line 10** (variable `output`), set the path for the filtered result;
+6. On **line 23** (variable `input`), set the path to the raw classification result;
 
-7. Run the script.
+7. On **line 26** (variable `output`), set the path for the filtered result;
+
+8. Run the script.

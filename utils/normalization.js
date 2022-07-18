@@ -1,6 +1,6 @@
 var NORMALIZATION_BANDS = ['BLUE', 'GREEN', 'RED', 'NIR', 'SWIR1', 'SWIR2'];
 
-var NORMALIZATION_TARGET = ee.Image('users/agrosatelite_mapbiomas/COLECAO_5/BLARD/MODIS_2000_2019_NORMALIZATION_TARGET')
+var NORMALIZATION_TARGET = ee.Image('users/testesMapBiomas/MODIS_2000_2022_NORMALIZATION_TARGET')
   .select(NORMALIZATION_BANDS)
   .divide(10000);
 
@@ -12,7 +12,9 @@ var CFACTOR = 0.03;
 
 var MIN_PSINV_PIXELS_COUNT = 5000;
 
-var COEFFICIENTS = ee.FeatureCollection('users/agrosatelite_mapbiomas/BLARD/NORMALIZATION/COEFFICIENTS');
+var COEFFICIENTS = ee.FeatureCollection('users/testesMapBiomas/COEFFICIENTS_C7'); //https://code.earthengine.google.com/4f59013848424beadf4104435171dece
+
+// print (COEFFICIENTS)
 
 var COEFFS_FIELD = 'NORMALIZATION_COEFFICIENTS';
 var JOIN_FIELD = 'LANDSAT_SCENE_ID';
@@ -21,7 +23,7 @@ var spacecrafts = {
   LANDSAT_8: {
     id: "LANDSAT/LC08/C01/T1_TOA",
     bands: {
-      from: ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10", "B11", "BQA",],
+      from: ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B9", "B10", "B11", "BQA", ],
       to: ["COASTAL", "BLUE", "GREEN", "RED", "NIR", "SWIR1", "SWIR2", "PAN", "CIRRUS", "TIR1", "TIR2", "BQA"]
     },
     qa_scores: {
@@ -58,7 +60,7 @@ var spacecrafts = {
   }
 }
 
-function get16Dayproduct(path, row, startDate, endDate, cloudCover, exportBands) {
+function get16Dayproduct(path, row, startDate, endDate, cloudCover, exportBands){
   exportBands = exportBands || ['BLUE', 'GREEN', 'RED', 'NIR', 'SWIR1', 'SWIR2']
 
   var landsatROI = ee.FeatureCollection("users/agrosatelite_mapbiomas/COLECAO_5/PUBLIC/GRIDS/BRASIL")
@@ -66,20 +68,20 @@ function get16Dayproduct(path, row, startDate, endDate, cloudCover, exportBands)
     .filterMetadata("ROW", "equals", row)
     .first()
     .geometry();
-
-
+  
+  
   var normalizedCollection = getNormalizedCollection(landsatROI, startDate, endDate, cloudCover, null, true);
 
   var intervals = ee.List(getIntervals(startDate, endDate));
 
-  var imagesByPeriods = intervals.map(function (feature) {
+  var imagesByPeriods = intervals.map(function(feature) {
     feature = ee.Feature(feature);
-
+    
     var startDate = ee.Date(feature.get("startDate"));
     var endDate = ee.Date(feature.get("endDate"));
-
+    
     var filteredCollection = normalizedCollection.filterDate(startDate, endDate);
-
+    
     return filteredCollection
       .set("IMAGES_COUNT", filteredCollection.size())
       .set("INTERVAL", feature.get("interval"))
@@ -89,15 +91,15 @@ function get16Dayproduct(path, row, startDate, endDate, cloudCover, exportBands)
 
   var products = ee.FeatureCollection(imagesByPeriods)
     .filterMetadata("IMAGES_COUNT", 'greater_than', 0)
-    .map(function (filteredCollection) {
+    .map(function(filteredCollection) {
       filteredCollection = ee.ImageCollection(filteredCollection)
-
+      
       var startDate = ee.Date(filteredCollection.get("START_DATE"));
-
+      
       var mosaic = getQualityMosaic(filteredCollection)
-
+      
       var extraBands = mosaic.select("TIR1", "QA_SCORE").multiply([10, 1]);
-
+  
       var finalMosaic = mosaic
         .clip(landsatROI)
         .select(exportBands)
@@ -116,31 +118,31 @@ function get16Dayproduct(path, row, startDate, endDate, cloudCover, exportBands)
   return ee.ImageCollection(products);
 }
 
-function getIntervals(startDateInput, endDateInput) {
+function getIntervals(startDateInput, endDateInput){
   startDateInput = ee.Date(startDateInput);
   endDateInput = ee.Date(endDateInput);
   var dates = ee.List([startDateInput.get("year"), endDateInput.get("year")])
     .distinct()
-    .iterate(function (year, list) {
+    .iterate(function(year, list){
       year = ee.Number.parse(year);
       list = ee.List(list);
-
-      for (var i = 1; i <= 23; i++) {
+      
+      for(var i=1; i<=23; i++){
         var startDOY = ((i * 16) - 15);
-        var endDOY = (((i + 1) * 16) - 15);
-
+        var endDOY = (((i+1) * 16) - 15);
+        
         var startDate = ee.Date.parse("Y D", ee.String(year).cat(" " + startDOY));
         var endDate = ee.Date.parse("Y D", ee.String(year).cat(" " + endDOY));
-
-        if (i >= 5) {
-          startDate = ee.Date.parse("Y D", ee.String(year).cat(" " + (startDOY - 1)));
-          if (i >= 23) {
+        
+        if(i >= 5){
+          startDate = ee.Date.parse("Y D", ee.String(year).cat(" " +(startDOY-1)));
+          if(i >= 23){
             endDate = ee.Date.parse("Y D", ee.String(year.add(1)).cat((" " + 1)));
-          } else {
-            endDate = ee.Date.parse("Y D", ee.String(year).cat(" " + (endDOY - 1)));
+          }else{
+            endDate = ee.Date.parse("Y D", ee.String(year).cat(" " + (endDOY-1)));
           }
         }
-
+        
         var feature = ee.Feature(null, {
           "startDate": startDate,
           "endDate": endDate,
@@ -150,22 +152,22 @@ function getIntervals(startDateInput, endDateInput) {
       }
       return list;
     }, ee.List([]));
-
+  
   dates = ee.List(dates)
     .filter(ee.Filter.greaterThanOrEquals("startDate", startDateInput))
     .filter(ee.Filter.lessThanOrEquals("endDate", ee.Date(endDateInput).advance(1, 'day')));
-
+    
   return dates;
 }
 
 function getQualityMosaic(collection) {
-  collection = collection.map(function (image) {
+  collection = collection.map(function(image) {
     var score = image.select("QA_SCORE")
-
+    
     var ndvi = image.normalizedDifference(["NIR", "RED"])
       .clamp(0, 1)
       .rename("NDVI");
-
+    
     var qualityFlag = score
       .multiply(-1)
       .add(ndvi)
@@ -181,66 +183,66 @@ function getQualityMosaic(collection) {
 
 function getNormalizedCollection(roi, startDate, endDate, maxCloudCover, bands, useExportedCoeffs) {
   var collection = getLandsatCollection(roi, startDate, endDate, maxCloudCover);
-
+  
   return applyNormalization(collection, bands, useExportedCoeffs);
 }
 
 function getLandsatCollection(roi, startDate, endDate, maxCloudCover) {
   maxCloudCover = maxCloudCover || DEFAULT_MAX_CLOUD_COVER;
-
+  
   function filter(spacecraft) {
     return ee.ImageCollection(spacecraft.id)
       .filterBounds(roi)
       .filterDate(startDate, endDate)
       .filterMetadata("CLOUD_COVER", "less_than", maxCloudCover)
       .select(spacecraft.bands.from, spacecraft.bands.to)
-      .map(function (image) {
+      .map(function(image) {
         return addQAScore(image, spacecraft.qa_scores, "BQA")
       })
   }
-
+  
   var landsat5 = filter(spacecrafts.LANDSAT_5);
   var landsat7 = filter(spacecrafts.LANDSAT_7);
   var landsat8 = filter(spacecrafts.LANDSAT_8);
-
+  
   var collection = landsat5.merge(landsat7).merge(landsat8);
 
   return collection;
 }
 
 function applyNormalization(collection, bands, useExportedCoeffs) {
-
+  
   if (useExportedCoeffs && COEFFICIENTS) {
     collection = joinCoefficients(collection);
   } else {
     collection = prepareToNormalization(collection);
     useExportedCoeffs = false;
   }
-
-  var correctedCollection = collection.map(function (originalImage) {
+  
+  var correctedCollection = collection.map(function(originalImage) {
     return normalizeImage(originalImage, bands, useExportedCoeffs);
   });
-
+  
   return correctedCollection;
 }
 
 function joinCoefficients(collection) {
   collection = ee.ImageCollection(collection);
-
+  
   var startMillis = collection.aggregate_min('system:time_start')
   startMillis = ee.List([startMillis, 0]).reduce(ee.Reducer.firstNonNull())
-
+  
   var startDate = ee.Date(startMillis).advance(-1, 'day');
-
+  
   var endMilles = collection.aggregate_max('system:time_start')
   endMilles = ee.List([endMilles, 0]).reduce(ee.Reducer.firstNonNull())
-
+  
   var endDate = ee.Date(endMilles).advance(1, 'day');
-
+   
   var coefficients = COEFFICIENTS.filterDate(startDate, endDate);
 
   collection = ee.Join
-    .saveFirst({ matchKey: COEFFS_FIELD })
+    .saveFirst({matchKey: COEFFS_FIELD})
     .apply({
       primary: collection,
       secondary: coefficients,
@@ -291,7 +293,7 @@ function addPseudoInvariantObjectsBand(image) {
 
 function countPseudoInvariantPixels(image) {
   var psInvMask = image.select('PSINV_PIXELS_MASK');
-
+  
   var psInvPixelsCount = psInvMask
     .reduceRegion({
       reducer: ee.Reducer.count(),
@@ -299,8 +301,8 @@ function countPseudoInvariantPixels(image) {
       scale: SPATIAL_RESOLUTION,
       maxPixels: 10E10,
     })
-    .values()
-    .getNumber(0);
+   .values()
+   .getNumber(0);
 
   return image.set('PSINV_PIXELS_COUNT', psInvPixelsCount);
 }
@@ -310,7 +312,7 @@ function normalizeImage(image, bands, useExportedCoeffs) {
   useExportedCoeffs = useExportedCoeffs !== false; // set default to true
 
   var coefficients = null;
-
+  
   if (useExportedCoeffs) {
     coefficients = getCoefficientsFromProperties(image, bands);
   } else {
@@ -322,11 +324,11 @@ function normalizeImage(image, bands, useExportedCoeffs) {
 
   var gainImg = ee.Image(gain).arrayFlatten([bands]);
   var offsetImg = ee.Image(offset).arrayFlatten([bands]);
-
+  
   var normalizedImage = image.select(bands).multiply(gainImg).add(offsetImg);
-
+  
   var bandsToReturn = ee.List(bands).cat(['BQA', 'QA_SCORE', 'TIR1']).distinct();
-
+  
   return image
     .addBands(normalizedImage, null, true)
     .select(bandsToReturn)
@@ -338,9 +340,9 @@ function normalizeImage(image, bands, useExportedCoeffs) {
 
 function getCoefficientsFromProperties(image, bands) {
   var sortedBands = ee.List(NORMALIZATION_BANDS).sort();
-
+  
   var coeffs = ee.Feature(image.get(COEFFS_FIELD));
-
+  
   var gain = coeffs.select(['.*_gain'], sortedBands);
   var offset = coeffs.select(['.*_offset'], sortedBands);
 
@@ -369,13 +371,13 @@ function calculateCoefficients(image, bands) {
       scale: SPATIAL_RESOLUTION,
       maxPixels: 1E13,
     }));
-
+  
   stats = ee.Feature(null, stats);
-
+  
   function select(pattern) {
     return ee.Feature(stats.select(pattern, sortedBands));
   }
-
+  
   var imageMeans = select(['img_.*_mean']).toArray(bands);
   var imageStdDev = select(['img_.*_stdDev']).toArray(bands);
 
@@ -384,7 +386,7 @@ function calculateCoefficients(image, bands) {
 
   var gain = targetStdDev.divide(imageStdDev);
   var offset = targetMeans.subtract(gain.multiply(imageMeans));
-
+  
   var coefficients = ee.Dictionary({
     'gain': gain,
     'offset': offset
@@ -396,7 +398,7 @@ function calculateCoefficients(image, bands) {
 function composeName(prefix, sufix) {
   prefix = prefix || '';
   sufix = sufix || '';
-  return function (name) {
+  return function(name) {
     return ee.String(prefix).cat(name).cat(sufix);
   };
 }
@@ -404,18 +406,18 @@ function composeName(prefix, sufix) {
 function addQAScore(image, bitmasksScores, qualityBand) {
   qualityBand = image.select(qualityBand || "BQA")
   var bestScore = qualityBand.gte(0).int().rename('mask');
-
+  
   var scoredList = Object.keys(bitmasksScores)
-    .map(function (score) {
+    .map(function(score) {
       score = parseInt(score, 10);
       var bitmasks = ee.List(bitmasksScores[score]);
-
+      
       var mask = getMaskFromBitmaskList(qualityBand, bitmasks, 'or');
       var scoredMask = mask.multiply(score);
-
-      return scoredMask.int().rename('mask');
+      
+      return scoredMask.int().rename('mask');      
     });
-
+  
   scoredList = ee.List(scoredList).add(bestScore);
 
   var scored = ee.ImageCollection
@@ -440,7 +442,7 @@ function getMaskFromBitmaskList(qualityBand, bitmasks, reducer, reverse) {
     .reduce(reducer());
 
   if (reverse)
-    mask = mask.not();
+      mask = mask.not();
 
   return mask;
 }
