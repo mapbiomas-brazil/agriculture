@@ -31,9 +31,7 @@ var harmonization = require('users/agrosatelite_mapbiomas/mapbiomas_tutorial:col
 
 // select target years
 var years = [2021, 2020,2019,2018,2017,2016,2015,2014,2013,2012,2011,
-            2010,2009,2008,2007,2006,2005,2004,2003,2002,2001,
-            2000,1999,1998,1997,1996,1995,1994,1993,1992,1991,
-            1990,1989,1988,1987,1986,1985] // it MUST start with the most recent year
+            2010,2009,2008,2007,2006,2005,2004,2003,2002,2001,2000]
 
 
 // set the number of harmonics for the harmonization
@@ -92,43 +90,10 @@ var addDependents = function(image) {
 //                                                 ANNUAL LOOP
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-var peak_years = ee.Image()
 
 years.forEach(function(year){
   
-  
-  // check if year is before 2000 - if it is, the PeakVeg for the year is the mode of the series after 2000
-  if(year < 2000){
-    
-    var col_month = col.map(function(image){
-      return image.select('month').toByte()
-    })
-    
-    var SeriesGreenestDay = col_month.reduce(ee.Reducer.mode(), 16).toByte()
-    
-    var RegionGreenestDay = SeriesGreenestDay.select('month_mode')
-      .reduceRegions({
-        collection: region,
-        reducer: ee.Reducer.mode(),
-        scale: 500,
-        tileScale: 16
-      });
-  // print(RegionGreenestDay)
 
-
-  // transforming the peak vegetation into an image
-  var PeakVeg = RegionGreenestDay.reduceToImage({
-        properties: ['mode'],
-        reducer: ee.Reducer.first()
-      }).rename(['PicoVeg_Moda'])//.unmask() 
-
-  peak_years = peak_years.addBands(PeakVeg.rename('peak_' + year))
-  
-  // Map.addLayer(PeakVeg, vis, 'PeakVeg_'+year, true)
-
-
-  }else{
-  
   // setting start and end date based on crop calendar
   var startDate = ee.Date.fromYMD({year: year-1, month: 10, day: 1})
   var endDate = ee.Date.fromYMD({year: year, month: 9, day: 30})
@@ -165,28 +130,9 @@ years.forEach(function(year){
   var greenest = collection.qualityMosaic('fitted_EVI2')//.aside(print)  
   var percentil = collection.select('fitted_EVI2').reduce(ee.Reducer.percentile([40, 50]));
   
-  // season start calculation
-  var cropStart = collection.map(function(image) {
-    var doyMaxMask = image.select('day').lt(greenest.select('day')) //antes do pico da safra
-    var ndviMaxMask = image.select(['fitted_EVI2']).lte(percentil.select('fitted_EVI2_p40')) 
-    
-    return image.select(['day'], ['dayStart'])
-      .updateMask(ndviMaxMask)
-      .updateMask(doyMaxMask)
-      
-  }).max()
   
-  // season end calculation
-  var cropEnd = collection.map(function(image) {
-  var doyMinMask = image.select('day').gt(greenest.select('day')) //depois do pico da safra
-  var ndviMaxMask = image.select('fitted_EVI2').lte(percentil.select('fitted_EVI2_p50'))
-    
-    return image.select(['day'], ['dayEnd'])
-      .updateMask(doyMinMask)
-      .updateMask(ndviMaxMask)
-  }).min()
   
-  var mosaic = greenest.select(['month', 'day']).addBands(cropStart).addBands(cropEnd)
+  var mosaic = greenest.select(['month', 'day'])
   //print(mosaic, 'mosaic')
   
   
@@ -207,15 +153,14 @@ years.forEach(function(year){
         .map(function(image){
           return image.updateMask(winter)
         })
-   
+  
   
   // calculation of the greenest mosaic (qualityMosaic of EVI2)
   var greenest_summer = collection_summer.qualityMosaic('fitted_EVI2')//.aside(print)  
   var percentil_summer = collection_summer.select('fitted_EVI2').reduce(ee.Reducer.percentile([40, 50]));
   
-
   
-  var mosaic_summer = greenest_summer.select(['month', 'day']).addBands(cropStart).addBands(cropEnd)
+  var mosaic_summer = greenest_summer.select(['month', 'day'])
   //print(mosaic_summer, 'mosaic_summer')
   
 
@@ -255,39 +200,55 @@ years.forEach(function(year){
   .reduceRegions({
   collection: region,
   reducer: ee.Reducer.mode(),
-  scale: 500 
+  scale: 500,
+  tileScale: 16
   });
-  // print(RegionGreenestDay, 'region greenest day');
-
-  // transforming the peak vegetation into an image
-  var PeakVeg = RegionGreenestDay.reduceToImage({
-  properties: ['mode'],
-  reducer: ee.Reducer.first()
-  }).rename(['PicoVeg_Moda'])//.unmask() 
-
-  peak_years = peak_years.addBands(PeakVeg.rename('peak_' + year))
   
-  // Map.addLayer(PeakVeg, vis, 'PeakVeg_'+year, false)
-
-
+  
+  region = region.map(function(tile){
+    var same_tile = RegionGreenestDay.filter(ee.Filter.eq('PATHROW', tile.getNumber('PATHROW'))).first()
+    return tile.set(ee.String('peak_').cat(ee.String(ee.Number(year).int16())), same_tile.getNumber('mode').int())  
+  })
+  
+  
+  //print(region)
      
-} // end else
+
 })//.aside(print)
 
 
-// Print Grid
-// Map.addLayer(peak_years, {}, 'GRID', false)
-print (peak_years.bandNames())
 
-Export.image.toAsset({
-  image: peak_years, 
-  description: 'peaks_MODIS_temporaryCrops', 
-  assetId: output+ '/peaks_MODIS_temporaryCrops', 
-  region: region, 
-  scale: 500,
-  maxPixels: 10e12, 
-  shardSize: 32
+// Set the peaks in years from 1985 to 1999 as the mode of the rest
+
+region = region.map(function(tile){
+  
+  var mode = ee.Number(
+    tile.toDictionary(tile.select(['peak_.*']).propertyNames())
+        .values()
+        .reduce(ee.Reducer.mode())
+        ).int16()
+  
+  var final_tile = ee.Feature(ee.List.sequence(1985,1999).iterate(function(year, t){
+    t = ee.Feature(t)
+    year = ee.Number(year).int16()
+    
+    var property = ee.String('peak_').cat(ee.String(year))
+    
+    return t.set(property, mode)
+    
+  }, tile))
+  
+  return final_tile
   
 })
+
+print(region)
+
+Export.table.toAsset({
+  collection: region,
+  description: 'VEGETATIVE_PEAK_GRID',
+  assetId: output+'VEGETATIVE_PEAK_GRID'
+})
+
 
 

@@ -22,8 +22,8 @@ You need to copy the scripts in this folder and in the [utils folder](../utils) 
 
 2. On **line 33** (variable `years`) set the years you want to calculate;
 
-3. On **line 52** (variable `output`) set the output destination;
+3. On **line 50** (variable `output`) set the output destination;
 
-4. On **line 66** (variable `full_ref`) set your reference map;
+4. On **line 64** (variable `full_ref`) set your reference map;
 
 5. Run de script.
