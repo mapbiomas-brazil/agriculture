@@ -7,7 +7,7 @@
 Developed by ***Agrosatélite Geotecnologia Aplicada Ltda***.
 
 ## About
-This repository contains the scripts used in the classification of the agriculture theme, for the Collection 7 of Mapbiomas. We recommend that you read the  [Agriculture Appendix of the Algorithm Theoretical Basis Document (ATBD)](https://mapbiomas.org/download-dos-atbds), since important informations about the classification methodology can be found in there. For this collection, we have the following agriculture subclasses:
+This repository contains scripts used in the classification of the agriculture subclasses, for Mapbiomas Collection 8. We recommend that you read the  [Agriculture Appendix of the Algorithm Theoretical Basis Document (ATBD)](https://mapbiomas.org/download-dos-atbds), since important informations about the classification methodology can be found there. For this collection, we have the following agriculture subclasses:
 
  - Temporary Crop
 	- Soybean
@@ -18,6 +18,7 @@ This repository contains the scripts used in the classification of the agricultu
  - Perennial Crop
 	- Coffee
 	- Citrus
+	- Oil Palm
 	- Other Perennial Crop
 
 ## How to use
@@ -29,5 +30,6 @@ First, you need to copy the scripts in this repository  (including those in [uti
  - [Rice](./rice) instructions;
  - [Coffee](./coffee) instructions;
  - [Citrus](./citrus) instructions;
+ - [Oil Palm](./oil_palm) instructions;
  - [Other Perennial Crop](./perennial_crops) instructions.
 
