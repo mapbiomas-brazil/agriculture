@@ -6,11 +6,11 @@
  *      Classification script for Soybean, Cotton and Other Temporary Crops.
  * 
  * @author
- *      Agrosatélite
- *      mapbiomas@agrosatelite.com.br
+ *      Remap
+ *      mapbiomas@remapgeo.com
  *
  * @version
- *  MapBiomas Collection 7.0
+ *  MapBiomas Collection 9.0
  *   
  */
 
@@ -18,11 +18,11 @@
 
 // Set the path to the scripts you copied to your GEE account:
 //Indexes
-  var index = require('users/agrosatelite_mapbiomas/mapbiomas_tutorial:collection7/utils/indexes.js');
+  var index = require('users/your_user/your_repository:utils/indexes.js');
 //Normalization
-  var getNormalizedCollection = require("users/agrosatelite_mapbiomas/mapbiomas_tutorial:collection7/utils/normalization.js").getNormalizedCollection;
+  var getNormalizedCollection = require("users/your_user/your_repository:utils/normalization.js").getNormalizedCollection;
 //Cloud Mask
-  var cloudLib = require("users/agrosatelite_mapbiomas/mapbiomas_tutorial:collection7/utils/cloud.js");
+  var cloudLib = require("users/your_user/your_repository:utils/cloud.js");
 
 
   
@@ -31,10 +31,10 @@
 // ============================================================================
 
 // Landsat Grid Collection (with peak vegetation month as a property) 
-var gridCollection = ee.FeatureCollection("users/agrosatelite_mapbiomas/COLECAO_7/GRIDS/BRASIL_COMPLETO_PEAK")
+var gridCollection = ee.FeatureCollection("users/mapbiomas1/PUBLIC/GRIDS/BRASIL_COMPLETO_PEAK")
 
 // Subtiles for stratified sampling
-var SubTile = ee.FeatureCollection("users/agrosatelite_mapbiomas/COLECAO_7/GRIDS/SUBTILES")
+var SubTile = ee.FeatureCollection("users/mapbiomas1/PUBLIC/GRIDS/SUBTILES")
 
 
 // ============================================================================
@@ -183,16 +183,16 @@ years.forEach(function(year){
   
           var periods = {
             'WET': {
-              'Start': ee.Date.fromYMD(year, peak_month,01).advance(-3, 'month'),
-              'End': ee.Date.fromYMD(year, peak_month,01).advance(3, 'month')
+              'Start': ee.Date.fromYMD(year, peak_month,1).advance(-3, 'month'),
+              'End': ee.Date.fromYMD(year, peak_month,1).advance(3, 'month')
             },
             'DRY': {
-              'Start': ee.Date.fromYMD(year, peak_month,01).advance(-5, 'month'),
-              'End': ee.Date.fromYMD(year, peak_month,01).advance(-3, 'month')
+              'Start': ee.Date.fromYMD(year, peak_month,1).advance(-5, 'month'),
+              'End': ee.Date.fromYMD(year, peak_month,1).advance(-3, 'month')
             },
             'ANNUAL': {
-              'Start': ee.Date.fromYMD(year, peak_month,01),
-              'End': ee.Date.fromYMD(year, peak_month,01).advance(12, 'month')
+              'Start': ee.Date.fromYMD(year, peak_month,1),
+              'End': ee.Date.fromYMD(year, peak_month,1).advance(12, 'month')
             }
           };
           

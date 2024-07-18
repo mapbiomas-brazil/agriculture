@@ -3,21 +3,21 @@
  *      SUGARCANE CLASSIFICATION
  * 
  * @description
- *      Classification script for the Sugarcane class in MapBiomas Collection 7.
+ *      Classification script for the Sugarcane class in MapBiomas Collection 9.
  * 
  * @author
- *      Agrosatélite
- *      mapbiomas@agrosatelite.com.br
+ *      Remap
+ *      mapbiomas@remapgeo.com
  *
  * @version
- *  MapBiomas Collection 7.0
+ *  MapBiomas Collection 9.0
  *   
  */
 
 
 
 // Set the path to the api.js script you copied to your GEE account:
-var api = require('users/agrosatelite_mapbiomas/mapbiomas_tutorial:collection7/utils/api.js');
+var api = require('users/your_user/your_repository:utils/api.js');
 
 /************* SETTINGS **************/
 
@@ -75,7 +75,7 @@ var imageCollection = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA");
 // set the path to you reference map that will be used for sampling
 var reference = ee.Image("users/your_username/MAPBIOMAS/C6/AGRICULTURE/SUGARCANE/REFERENCE_MAP");
 
-var gridCollection = ee.FeatureCollection("users/agrosatelite_mapbiomas/COLECAO_6/GRIDS/BRASIL_COMPLETO");
+var gridCollection = ee.FeatureCollection("users/mapbiomas1/PUBLIC/GRIDS/BRASIL_COMPLETO");
 
 var trainingSamples = 10000;
 

@@ -4,10 +4,10 @@
     <h1>Agriculture</h1>
 </div>
 
-Developed by ***Agrosatélite Geotecnologia Aplicada Ltda***.
+Developed by ***Remap Geotecnologia Ltda***.
 
 ## About
-This repository contains scripts used in the classification of the agriculture subclasses, for Mapbiomas Collection 8. We recommend that you read the  [Agriculture Appendix of the Algorithm Theoretical Basis Document (ATBD)](https://mapbiomas.org/download-dos-atbds), since important informations about the classification methodology can be found there. For this collection, we have the following agriculture subclasses:
+This repository contains scripts used for the classification of Mapbiomas' Collection 9 agriculture classes. We recommend that you read the  [Agriculture Appendix of the Algorithm Theoretical Basis Document (ATBD)](https://mapbiomas.org/download-dos-atbds), since important informations about the classification methodology can be found there. For this collection, we have the following agriculture classes:
 
  - Temporary Crop
 	- Soybean
@@ -23,7 +23,7 @@ This repository contains scripts used in the classification of the agriculture s
 
 ## How to use
 
-First, you need to copy the scripts in this repository  (including those in [utils folder](./utils)) to your Google Earth Engine (**GEE**) account. Then, you can follow the instructions for every subclass in the links bellow:
+First, you need to copy the scripts in this repository  (including those in [utils folder](./utils)) to your Google Earth Engine (**GEE**) account. Then, you can follow the instructions for every class in the links bellow:
 																						 
  - [Soybean, Cotton and Other Temporary Crops](./soybean_cotton_other_temporary_crops) instructions;
  - [Sugar Cane](./sugarcane) instructions;

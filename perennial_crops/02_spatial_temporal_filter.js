@@ -3,14 +3,14 @@
  *      OTHER PERENNIAL CROPS SPATIAL TEMPORAL FILTER
  * 
  * @description
- *      Filter script for the Other Perennial Crops class in MapBiomas Collection 7.
+ *      Filter script for the Other Perennial Crops class in MapBiomas Collection 9.
  * 
  * @author
- *      Agrosatélite
- *      mapbiomas@agrosatelite.com.br
+ *      Remap
+ *      mapbiomas@remapgeo.com
  *
  * @version
- *  MapBiomas Collection 7.0
+ *  MapBiomas Collection 9.0
  *   
  */
 

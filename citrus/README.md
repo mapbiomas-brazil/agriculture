@@ -3,7 +3,7 @@
     <h1>Citrus</h1>
 </div>
 
-Developed by ***Agrosatélite Geotecnologia Aplicada Ltda***.
+Developed by ***Remap Geotecnologia Ltda***.
 
 ## About
 

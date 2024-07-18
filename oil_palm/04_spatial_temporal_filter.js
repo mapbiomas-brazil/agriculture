@@ -6,15 +6,15 @@
  *      Script to apply filter to the Oil Palm classification.
  * 
  * @author
- *      Agrosatélite
- *      mapbiomas@agrosatelite.com.br
+ *      Remap
+ *      mapbiomas@remapgeo.com
  *
  * @version
- *  MapBiomas Collection 8.0
+ *  MapBiomas Collection 9.0
  * 
  */
  
-var filters = require('users/agrosatelite_mapbiomas/mapbiomas_tutorial:collection8/utils/temporal_spatial_filters.js');
+var filters = require('users/your_user/your_repository:utils/temporal_spatial_filters.js');
 
 var temporal = filters.temporal; 
 var spatial = filters.spatial;

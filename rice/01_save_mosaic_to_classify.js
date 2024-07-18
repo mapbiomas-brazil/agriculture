@@ -5,16 +5,14 @@
  * @description
  *  
  * @author
- *      Agrosatélite
- *      mapbiomas@agrosatelite.com.br
+ *      Remap
+ *      mapbiomas@remapgeo.com
  *
  * @version
- *  MapBiomas Collection 7.0
+ *  MapBiomas Collection 9.0
  * 
  */
  
-
-/************* DEFINE FUNCTIONS **************/
 
 function filterLandsatCollection(landsatCollectionPath, roi, startDate, endDate){
   var filteredCollection = ee.ImageCollection(landsatCollectionPath)
@@ -119,22 +117,16 @@ function getNDWI(image){
     var ndwi = image.expression(exp).rename(["ndwi"])
     return image.addBands(ndwi)}
     
-/************* END DEFINE FUNCTIONS**************/
-
-
-
-/************* SETTINGS **************/
 
 // set the output path for the classification results:
-
 var outputCollection = 'users/your_username/MAPBIOMAS/C6/AGRICULTURE/RICE/RESULTS/MOSAIC'
 
 // import states
-var estados = ee.FeatureCollection('users/agrosatelite_mapbiomas/REGIONS/ibge_estados_2019')
+var estados = ee.FeatureCollection('projects/mapbiomas-workspace/AUXILIAR/estados-2016')
 
 // import grid to save rice mosaics
-var gridRice = ee.FeatureCollection("users/agrosatelite_mapbiomas/COLECAO_6/GRIDS/GRID_BRAZIL_RICE")
-
+var PA = ee.Feature(ee.Geometry.Polygon([[[-49.149348825021846, -0.5775343224299616],[-49.149348825021846, -1.1516738488867537],[-48.44313392023669, -1.1516738488867537],[-48.44313392023669, -0.5775343224299616]]], null, false),{"system:index": "0","id": 1});
+var gridRice = ee.FeatureCollection("users/testesMapBiomas/Teste_Arroz/GRID_ARROZ_2").merge(PA)
 
 // set year to map
 var year = 2019
@@ -143,7 +135,7 @@ var year = 2019
 // set state to map
 
 var settings_uf = {
-  
+      
   'RS': {
     uf: 'RS',
     season_startDate : (year - 1) +'-10-01',
@@ -151,9 +143,8 @@ var settings_uf = {
     offseason_startDate : (year - 1)  +'-10-01',
     offseason_endDate : year +'-01-01',
     bands: ['cei_EVI2', 'swir1_season', 'swir2_season', 'TIR1_c_season']
-    
-
   },
+  
   'SC': {
     uf: 'SC',
     season_startDate : (year - 1) +'-10-01',
@@ -168,7 +159,15 @@ var settings_uf = {
     season_endDate : year +'-04-30',
     offseason_startDate : year  +'-01-01',
     offseason_endDate : year +'-07-30',
-    bands: ['cei_EVI2','evi2_offseason', 'swir1_offseason', 'swir2_offseason', 'cei_NDWI'],
+    bands: ['cei_EVI2', 'cei_NDWI', 'swir2_offseason'],
+  },
+    'MS': {
+    uf: 'MS',
+    season_startDate : (year - 1) +'-10-01',
+    season_endDate : year +'-04-30',
+    offseason_startDate : year  +'-01-01',
+    offseason_endDate : year +'-07-30',
+    bands: ['cei_EVI2', 'cei_NDWI', 'swir2_offseason'],
   },
   
   'TO': {
@@ -179,13 +178,25 @@ var settings_uf = {
     offseason_endDate : (year - 1) +'-11-01',
     bands: ['swir2_offseason', 'cei_EVI2','evi2_offseason', 'swir1_offseason', 'cei_NDWI'],
   },
+    'GO': {
+    uf: 'GO',
+    season_startDate : (year) +'-04-01',
+    season_endDate : year +'-07-30',
+    offseason_startDate : (year - 1)  +'-08-01',
+    offseason_endDate : (year - 1) +'-11-01',
+    bands: ['swir2_offseason', 'cei_EVI2','evi2_offseason', 'swir1_offseason', 'cei_NDWI'],
+  },
   
+  'PA': {
+    uf: 'PA',
+    season_startDate : (year - 1) +'-08-01',
+    season_endDate : (year) +'-01-30',
+    offseason_startDate : (year - 1)  +'-05-01',
+    offseason_endDate : (year - 1) +'-08-01',
+    bands: ['swir2_offseason', 'cei_EVI2','evi2_offseason', 'swir1_offseason', 'cei_NDWI'],
+  },
   
-} 
-
-
-/************* END SETTINGS **************/
-
+}
 
 
 // chose state to save mosaics

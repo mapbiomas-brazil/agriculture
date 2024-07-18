@@ -3,13 +3,13 @@
     <h1>Vegetative Peak</h1>
 </div>
 
-Developed by ***Agrosatélite Geotecnologia Aplicada Ltda***.
+Developed by ***Remap Geotecnologia Ltda***.
 
 ## About
 
-This folder contains the scripts to calculate the **Vegetative Peak** month of temporary crops. This was used in Collection 7 to define the periods for the mosaics used in the classification of soybean, cotton and other temporary crops. 
+This folder contains the scripts to calculate the **Vegetative Peak** month of temporary crops. This was used in Collection 9 to define the periods for the mosaics used in the classification of soybean, cotton and other temporary crops. 
 
-This is an optional step in the classification, since we left this information already available in [this GEE asset](https://code.earthengine.google.com/?asset=users/agrosatelite_mapbiomas/COLECAO_7/GRIDS/BRASIL_COMPLETO_PEAK).
+This is an optional step in the classification, since we left this information already available in [this GEE asset](https://code.earthengine.google.com/?asset=users/mapbiomas1/PUBLIC/GRIDS/BRASIL_COMPLETO_PEAK).
 
 We recommend that you read the [Agriculture Appendix of the Algorithm Theoretical Basis Document (ATBD)](https://mapbiomas.org/download-dos-atbds), since important informations about the methodology can be found in there. 
 

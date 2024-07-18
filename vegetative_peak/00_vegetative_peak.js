@@ -11,11 +11,11 @@
  *      after 2000. Thus, it is necessary that the list of years contains years after 2000 for them to be calculated.
  * 
  * @author
- *      Agrosatélite
- *      mapbiomas@agrosatelite.com.br
+ *      Remap
+ *      mapbiomas@remapgeo.com
  *
  * @version
- *  MapBiomas Collection 7.0
+ *  MapBiomas Collection 9.0
  *   
  */
 
@@ -26,7 +26,7 @@
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 // harmonization package import
-var harmonization = require('users/agrosatelite_mapbiomas/mapbiomas_tutorial:collection7/utils/harmonization.js');
+var harmonization = require('users/your_user/your_repository:utils/harmonization.js');
 
 
 // select target years
@@ -43,7 +43,7 @@ var vis = {min: 1, max: 12, palette: palette}
 
 
 // import feature collection to be used in the mode reducer (usually Landsat Scenes)
-var region = ee.FeatureCollection("users/agrosatelite_mapbiomas/COLECAO_7/GRIDS/BRASIL_COMPLETO")
+var region = ee.FeatureCollection("users/mapbiomas1/PUBLIC/GRIDS/BRASIL_COMPLETO")
                       .filterMetadata('AC_WRS', 'equals', 1);
                       
 // define output destination folder

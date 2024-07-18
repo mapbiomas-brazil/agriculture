@@ -8,16 +8,16 @@
  *      Soybean and Cotton.
  * 
  * @author
- *      Agrosatélite
- *      mapbiomas@agrosatelite.com.br
+ *      Remap
+ *      mapbiomas@remapgeo.com
  *
  * @version
- *  MapBiomas Collection 7.0
+ *  MapBiomas Collection 9.0
  * 
  */
 
 
-var filters = require('users/agrosatelite_mapbiomas/mapbiomas_tutorial:collection7/utils/temporal_spatial_filters.js');
+var filters = require('users/your_user/your_repository:utils/temporal_spatial_filters.js');
 
 var temporal = filters.temporal;
 var spatial = filters.spatial;

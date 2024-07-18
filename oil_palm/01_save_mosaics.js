@@ -8,11 +8,11 @@
  *      in Google Colab.
  * 
  * @author
- *      Agrosatélite
- *      mapbiomas@agrosatelite.com.br
+ *      Remap
+ *      mapbiomas@remapgeo.com
  *
  * @version
- *  MapBiomas Collection 8.0
+ *  MapBiomas Collection 9.0
  * 
  */
 
@@ -50,8 +50,8 @@ var centroides_tiles_treino = /* color: #d63000 */ee.FeatureCollection(
 
 var training_label = ee.Image("users/your_username/assets/reference_map_oil_palm")
 
-var standardizeImage = require("users/agrosatelite_mapbiomas/mapbiomas_tutorial:collection8/utils/standardize_images.js").standardizeImage
-var maskClouds = require("users/agrosatelite_mapbiomas/mapbiomas_tutorial:collection8/utils/cloud.js").maskCloudsC2
+var standardizeImage = require("users/your_user/your_repository:utils/standardize_images.js").standardizeImage
+var maskClouds = require("users/your_user/your_repository:utils/cloud.js").maskCloudsC2
 
 var startDate = '2020-01-01'
 var endDate = '2021-01-01'

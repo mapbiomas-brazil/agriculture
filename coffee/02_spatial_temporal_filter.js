@@ -18,19 +18,19 @@ var geometry =
  *      SPATIAL TEMPORAL COFFEE FILTER C7
  * 
  * @description
- *      Filter script for MapBiomas Collection 7 Coffee class.
+ *      Filter script for MapBiomas Collection 9 Coffee class.
  * 
  * @author
- *      Agrosatélite
- *      mapbiomas@agrosatelite.com.br
+ *      Remap
+ *      mapbiomas@remapgeo.com
  *
  * @version
- *  MapBiomas Collection 7.0
+ *  MapBiomas Collection 9.0
  *   
  */
 
 
-var filters = require("users/agrosatelite_mapbiomas/mapbiomas_tutorial:collection7/utils/temporal_spatial_filters.js");
+var filters = require("users/your_user/your_repository:utils/temporal_spatial_filters.js");
 
 var temporal = filters.temporal;
 var spatial = filters.spatial;
@@ -113,7 +113,7 @@ filtered = filtered.addBands(filtered_first, null, true)
 
 
 // mask states
-var states = ee.FeatureCollection('users/agrosatelite_mapbiomas/REGIONS/ibge_estados_2019')
+var states = ee.FeatureCollection('projects/mapbiomas-workspace/AUXILIAR/estados-2016')
   .filter(ee.Filter.inList('SIGLA_UF', ['ES','MG', 'SP', 'BA', 'PR', 'GO', 'DF']))
   
 var mask = ee.Image(0).paint(states, 1);

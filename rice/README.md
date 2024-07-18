@@ -1,9 +1,9 @@
 <div>
-    <img src='https://agrosatelite.com.br/wp-content/uploads/2019/02/logo_horizontal_negativo.png' height='auto' width='200' align='right'>
+    <img src='../assets/logo.png' height='auto' width='200' align='right'>
     <h1>Rice (Irrigated)</h1>
 </div>
 
-Developed by ***Agrosatélite Geotecnologia Aplicada***.
+Developed by ***Remap Geotecnologia Ltda***.
 
 ## About
 
@@ -11,7 +11,9 @@ This folder contains the scripts to classify and post-process the **irrigated ri
 
 We recommend that you read the [Agriculture Appendix of the Algorithm Theoretical Basis Document (ATBD)](https://mapbiomas.org/download-dos-atbds), since important informations about the classification methodology can be found in there.
 
-### How to use
+## How to use
+
+### Classification
 
 #### To classify using the trained MapBiomas Neural Network 
 
@@ -25,6 +27,15 @@ We recommend that you read the [Agriculture Appendix of the Algorithm Theoretica
 
 2. Open and run [this script](https://colab.research.google.com/drive/194eOqVKdq8gtAoVA2iFdtBEn5QRMWRVx?usp=sharing).
 
+#### Classification using Random Forest
+
+1. Open the script **agriculture/rice/02_temporal_filter.js**;
+
+2. On **line 66** (variable `outputCollection`), set the path to save the ImageCollection raw classification result;
+
+3. On **line 74** (variable `selected_UFs`), set the UF for each Brazilian state you want to classify (considering the options available on `settings_uf`);
+
+4. Run the script.
 
 ### Post-processing
 
@@ -32,10 +43,10 @@ To run the post-processing, follow these steps:
 
 1. Open the script **agriculture/rice/03_temporal_filter.js**;
 
-2. On **line 18** (variable `filters`), set the path to the [temporal_spatial_filters.js](../utils/temporal_spatial_filters.js) script you copied to your GEE account;
+2. On **line 34** (variable `filters`), set the path to the [temporal_spatial_filters.js](../utils/temporal_spatial_filters.js) script you copied to your GEE account;
 
-3. On **line 26** (variable `input`), set the path to the ImageCollection raw classification result;
+3. On **line 42** (variable `input`), set the path to the ImageCollection raw classification result;
 
-4. On **line 29** (variable `output`, set the path to the filtered result;
+4. On **line 45** (variable `output`), set the path to the filtered result;
 
 5. Run the script.

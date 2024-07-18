@@ -7,11 +7,11 @@
  *      in Google Colab.
  * 
  * @author
- *      Agrosatélite
- *      mapbiomas@agrosatelite.com.br
+ *      Remap
+ *      mapbiomas@remapgeo.com
  *
  * @version
- *  MapBiomas Collection 7.0
+ *  MapBiomas Collection 9.0
  * 
  */
  
@@ -22,7 +22,7 @@
   [-49.25759740597596, -22.188240856482484]]], null, false);
 
 
-var getNormalizedCollection = require("users/agrosatelite_mapbiomas/mapbiomas_tutorial:collection7/utils/normalization.js").getNormalizedCollection;
+var getNormalizedCollection = require("users/your_user/your_repository:utils/normalization.js").getNormalizedCollection;
 
 var year = 2020
 
@@ -35,7 +35,7 @@ var maxImages = 5;
 
 var bands = ['RED', 'NIR', 'SWIR1']
 
-var wrsGrid = ee.FeatureCollection('users/agrosatelite_mapbiomas/COLECAO_6/GRIDS/BRASIL_COMPLETO')
+var wrsGrid = ee.FeatureCollection('users/mapbiomas1/PUBLIC/GRIDS/BRASIL_COMPLETO')
   .filterBounds(geometry)
   .aside(Map.addLayer, {}, 'wrs', false)
 

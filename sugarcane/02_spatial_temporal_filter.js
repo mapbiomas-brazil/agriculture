@@ -3,19 +3,19 @@
  *      SUGARCANE SPATIAL TEMPORAL FILTER
  * 
  * @description
- *      Spatial-temporal filter script for the Sugarcane class in MapBiomas Collection 7.
+ *      Spatial-temporal filter script for the Sugarcane class in MapBiomas Collection 9.
  * 
  * @author
- *      Agrosatélite
- *      mapbiomas@agrosatelite.com.br
+ *      Remap
+ *      mapbiomas@remapgeo.com
  *
  * @version
- *  MapBiomas Collection 7.0
+ *  MapBiomas Collection 9.0
  *   
  */
 
 
-var filters = require('users/agrosatelite_mapbiomas/mapbiomas_tutorial:collection6/utils/temporal_spatial_filters.js');
+var filters = require('users/your_user/your_repository:utils/temporal_spatial_filters.js');
 
 var temporal = filters.temporal;
 var spatial = filters.spatial;

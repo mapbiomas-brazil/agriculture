@@ -63,7 +63,7 @@ var spacecrafts = {
 function get16Dayproduct(path, row, startDate, endDate, cloudCover, exportBands){
   exportBands = exportBands || ['BLUE', 'GREEN', 'RED', 'NIR', 'SWIR1', 'SWIR2']
 
-  var landsatROI = ee.FeatureCollection("users/agrosatelite_mapbiomas/COLECAO_5/PUBLIC/GRIDS/BRASIL")
+  var landsatROI = ee.FeatureCollection("users/mapbiomas1/PUBLIC/GRIDS/BRASIL")
     .filterMetadata("PATH", "equals", path)
     .filterMetadata("ROW", "equals", row)
     .first()

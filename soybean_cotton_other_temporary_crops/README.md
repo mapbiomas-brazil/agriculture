@@ -3,7 +3,7 @@
     <h1>Temporary Crops (Soybean, Cotton and Others)</h1>
 </div>
 
-Developed by ***Agrosatélite Geotecnologia Aplicada Ltda***.
+Developed by ***Remap Geotecnologia Ltda***.
 
 ## About
 
