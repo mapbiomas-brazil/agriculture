@@ -1,20 +1,37 @@
-// set the path to the api.js script you copied to your GEE account:
-var api = require('users/your_username/repository_name:utils/api.js');
+/**
+ * @name
+ *      OTHER PERENNIAL CROPS CLASSIFICATION
+ * 
+ * @description
+ *      Classification script for the Other Perennial Crops class in MapBiomas Collection 9.
+ * 
+ * @author
+ *      Remap
+ *      mapbiomas@remapgeo.com
+ *
+ * @version
+ *  MapBiomas Collection 9.0
+ *   
+ */
+
+
+// Set the path to the api.js script you copied to your GEE account:
+var api = require('users/your_user/your_repository:utils/api.js');
 
 /************* SETTINGS **************/
 
 // set the output path for the classification results:
-var outputCollection = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/TEMPORARY_PERENNIAL/RESULTS/RAW';
+var output = 'users/your_username/MAPBIOMAS/C6/AGRICULTURE/PERENNIAL_CROPS/RESULTS/RAW';
 
 // set the years you want to classify:
-var years = [2018];
+var years = [2019];
 
 var cloudCover = 90;
 
 var offset = 2;
 
 // set the WRS (path and row) you want to classify:
-var tiles = [[221, 74]];
+var tiles = [[220, 69]];
 
 var bands = [
   api.Band.BLUE, 
@@ -67,9 +84,9 @@ var extraFeatureSpace = [
 var imageCollection = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA");
 
 // set the path to you reference map that will be used for sampling
-var referenceCollection = ee.ImageCollection("users/your_username/MAPBIOMAS/C5/AGRICULTURE/TEMPORARY_PERENNIAL/REFERENCE_MAP");
+var reference = ee.Image("users/your_username/MAPBIOMAS/C7/AGRICULTURE/PERENNIAL_CROPS/REFERENCE_MAP");
 
-var gridCollection = ee.FeatureCollection("users/agrosatelite_mapbiomas/COLECAO_5/PUBLIC/GRIDS/BRASIL");
+var gridCollection = ee.FeatureCollection("users/mapbiomas1/PUBLIC/GRIDS/BRASIL_COMPLETO");
 
 var trainingSamples = 10000;
 
@@ -128,26 +145,17 @@ years.forEach(function(year){
     
     mosaic = mosaic
       .addBands(cei)
-    
+      .select(featureSpace.concat(extraFeatureSpace))
+      .clip(roi)
+      .unmask();
+      
     var filename = " " + wrs[0]+ wrs[1]  +  '_' + year;
     var mosaicFilename = filename + "_mosaic";
     
-    Map.addLayer(mosaic, {bands: ['WET_NIR_qmo', 'WET_SWIR1_qmo', 'WET_RED_qmo'], min: 0, max: 0.5}, mosaicFilename);
-    
-    mosaic = mosaic
-      .select(featureSpace.concat(extraFeatureSpace))
-      .multiply(10000)
-      .clip(roi);
  
     // Sampling //
-    
-    var reference = referenceCollection
-      .filterMetadata('year', 'equals', year)
-      .mosaic()
-      .unmask(null);
-      
     var train = mosaic
-      .addBands(reference.select([0], ["class"]));
+      .addBands(reference.select([0], ["class"]).unmask());
       
     var training = train.sample({
       'region': roi,
@@ -159,7 +167,7 @@ years.forEach(function(year){
     // Training //
 
     var classifier = ee.Classifier
-      .randomForest(randomForestTrees)
+      .smileRandomForest(randomForestTrees)
       .train(training, 'class', featureSpace.concat(extraFeatureSpace));
     
 
@@ -170,13 +178,14 @@ years.forEach(function(year){
   	  .rename(['classification'])
 
     
-    // Visualizing results //
+    // Visualization //
      
     var referenceFilename = filename + "_reference";
     var classificationFilename = filename + "_classification";
-    
-    Map.addLayer(reference, {min: 0, max: 1},referenceFilename, false);
-    Map.addLayer(classified, {min: 0, max: 1}, classificationFilename, false);
+
+    Map.addLayer(mosaic.clip(roi), {bands: ['WET_NIR_qmo', 'WET_SWIR1_qmo', 'WET_RED_max'], min: 0, max: 6000}, mosaicFilename);    
+    Map.addLayer(reference.clip(roi), {min: 0, max: 1},referenceFilename, false);
+    Map.addLayer(classified.clip(roi), {min: 0, max: 1}, classificationFilename, false);
     
     // Exporting Results //
     
@@ -186,8 +195,8 @@ years.forEach(function(year){
 
       Export.image.toAsset({
         image: classified.byte(), 
-        description: 'temporary_perennial_' + filename, 
-        assetId: outputCollection + '/' + filename, 
+        description: 'PERENNIAL_CROPS_' + filename, 
+        assetId: output + '/' + filename, 
         region: geometry, 
         scale: 30, 
         maxPixels: 1.0E13

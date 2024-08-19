@@ -4,7 +4,7 @@
 
 var Factor = 10000;
 
-var Band = Object.freeze({
+var Band = {
   BLUE: "BLUE", 
   GREEN: "GREEN", 
   RED: "RED", 
@@ -24,12 +24,12 @@ var Band = Object.freeze({
   AWEI_SH: "AWEI_SH",
   MSAVI2: "MSAVI2",
   BSI: 'BSI'
-});
+};
 
 
 // Similar to the previous object. 
 // This object store the name of all possible Reducers that can use.
-var Reducer = Object.freeze({
+var Reducer = {
   MIN: "min", 
   MAX: "max", 
   MEAN: "mean",
@@ -49,17 +49,17 @@ var Reducer = Object.freeze({
       'percentiles': percentiles
     };
   }, 
-});
+};
 
 // This object store the name of all satellites/sensors that can use.
-var Sensor = Object.freeze({
+var Sensor = {
   L5: "LANDSAT_5", 
   L7: "LANDSAT_7", 
   L8: "LANDSAT_8", 
   S2A: "Sentinel-2A", 
   S2B: "Sentinel-2B",
   BLARD: "BLARD"
-});
+};
 
 // Bits used for calculating the cloud mask of Landsat 5 and Landsat 7 satellites/sensors.
 var qaBits57 = [ 
@@ -188,7 +188,16 @@ Image.prototype = {
     var tir2 = ee.Algorithms.If(ee.List([Sensor.L8]).containsAll([this.image.get('SPACECRAFT_ID')]),
       this.image.select(['B11'], [Band.TIR2]).int16(),
       this.image.select(Band.TIR2).int16());
-                 
+    
+    // var blue = this.image.select("BLUE")
+    // var green = this.image.select("GREEN")
+    // var red = this.image.select("RED")
+    // var nir = this.image.select("NIR")
+    // var swir1 = this.image.select("SWIR1")
+    // var swir2 = this.image.select("SWIR2")
+    // var tir1 = this.image.select("TIR1")
+    // var tir2 = this.image.select("TIR1")
+     
     var evi2 = this.image.expression('2.5 * ((NIR - RED) / (NIR + 2.4*RED + 1))', {
       'NIR': ee.Image(nir).divide(Factor),
       'RED': ee.Image(red).divide(Factor)
@@ -314,15 +323,19 @@ Image.prototype = {
       if(band === Band.MNDWI){
         temp_bands.push(mndwi)
       }
+      
       if(band === Band.AWEI_NSH){
         temp_bands.push(awei_nsh)
       }
+      
       if(band === Band.AWEI_SH){
         temp_bands.push(awei_sh)
       }
+      
       if(band === Band.MSAVI2){
         temp_bands.push(msavi2)
       }
+      
       if(band === Band.BSI){
         temp_bands.push(bsi)
       }      
@@ -374,7 +387,7 @@ ImageCollection.prototype = {
         }
     }
     
-    var collection = this.imageCollection.filter(filter);
+    var collection = this.imageCollection.filter(filter)
       
     collection = collection.map(function(image){
       return ee.Image(ee.Algorithms.If(ee.List([Sensor.L5, Sensor.L7, Sensor.L8]).containsAll([image.get('SPACECRAFT_ID')]),

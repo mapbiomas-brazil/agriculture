@@ -1,23 +1,38 @@
+/**
+ * @name
+ *      OTHER PERENNIAL CROPS SPATIAL TEMPORAL FILTER
+ * 
+ * @description
+ *      Filter script for the Other Perennial Crops class in MapBiomas Collection 9.
+ * 
+ * @author
+ *      Remap
+ *      mapbiomas@remapgeo.com
+ *
+ * @version
+ *  MapBiomas Collection 9.0
+ *   
+ */
+
 // set the input path to the raw separation result:
-var input = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/TEMPORARY_PERENNIAL/RESULTS/SEPARATION';
+var input = 'users/your_username/MAPBIOMAS/C6/AGRICULTURE/PERENNIAL_CROPS/RESULTS/RAW';
 
 // set the path for the temporary crop filtered result:
-var output = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/TEMPORARY_PERENNIAL/RESULTS/PERENNIAL_CROP_TEMPORAL_SPATIAL_FILTERED';
+var output = 'users/your_username/MAPBIOMAS/C6/AGRICULTURE/PERENNIAL_CROPS/RESULTS/TEMPORAL_SPATIAL_FILTERED';
 
-// set the pixel value of the perennial crop as noted on the crops separation map:
-var classOfInterest = 2
+var brasil = ee.Image('projects/mapbiomas-workspace/AUXILIAR/ESTATISTICAS/COLECAO5/country-raster')
 
-// set the range of years you want to filter:
-var startYear = 2016
-var endYear = 2018
+var collection = ee.ImageCollection(input)
+
+var years = ee.List([collection.aggregate_min('year'), collection.aggregate_max('year')]).getInfo()
+
+var startYear = years[0]
+var endYear = years[1]
 
 var results = ee.List.sequence(startYear, endYear)
 	.map(function(year) {
 		var yearlyMosaic = ee.ImageCollection(input)
       .filterMetadata('year', 'equals', year)
-      .map(function(image) {
-        return image.eq(classOfInterest)
-      })
       .or()
       .set('year', year);
 
@@ -25,8 +40,6 @@ var results = ee.List.sequence(startYear, endYear)
 	})
 
 results = ee.ImageCollection(results)
-
-var brasilMask = ee.Image("users/agrosatelite_mapbiomas/COLECAO_5/PUBLIC/GRIDS/BIOMAS_IBGE_250K_BUFFER");
 
 // convert to perennial crop intervals of 1 year with 2 adjacent years of perennial crops
 var incOffset = [1, 2]
@@ -179,24 +192,17 @@ spatialFiltered = toBands(spatialFiltered)
 var finalResult = toBands(temporalFiltered)
 var rawResult = toBands(results).unmask()
 
-var vis = {
-  bands: ['classification_' + endYear],
-  min: 0,
-  max: 1,
-  palette: ['WHITE', 'BLACK'],
-  format: 'png'
-}
+var visYear = endYear
 
-Map.addLayer(rawResult.unmask(), vis, 'Raw')
-Map.addLayer(finalResult.unmask(), vis, 'Temporal-Spatial Filtered')
+Map.addLayer(rawResult.selfMask(), { bands: 'b' + visYear, palette: ['RED']}, 'Raw ' + visYear)
+Map.addLayer(finalResult.selfMask(), { bands: 'b'  + visYear, palette: ['BLUE']}, 'Filtered '  + visYear)
 
 Export.image.toAsset({
   image: finalResult, 
-  description: 'PERENNIAL_POST_PROCESSING', 
+  description: 'PERENNIAL_CROPS_TEMPORAL_SPATIAL_FILTER', 
   assetId: output, 
-  region: brasilMask.geometry(), 
+  region: brasil.geometry(30).bounds(30), 
   scale: 30, 
   maxPixels: 10e10
 })
-
 

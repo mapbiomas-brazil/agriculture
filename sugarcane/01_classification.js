@@ -1,10 +1,28 @@
-// set the path to the api.js script you copied to your GEE account:
-var api = require('users/your_username/repository_name:utils/api.js');
+/**
+ * @name
+ *      SUGARCANE CLASSIFICATION
+ * 
+ * @description
+ *      Classification script for the Sugarcane class in MapBiomas Collection 9.
+ * 
+ * @author
+ *      Remap
+ *      mapbiomas@remapgeo.com
+ *
+ * @version
+ *  MapBiomas Collection 9.0
+ *   
+ */
+
+
+
+// Set the path to the api.js script you copied to your GEE account:
+var api = require('users/your_user/your_repository:utils/api.js');
 
 /************* SETTINGS **************/
 
 // set the output path for the classification results:
-var outputCollection = 'users/your_username/MAPBIOMAS/C5/AGRICULTURE/SUGARCANE/RESULTS/RAW';
+var outputCollection = 'users/your_username/MAPBIOMAS/C6/AGRICULTURE/SUGARCANE/RESULTS/RAW';
 
 // set the years you want to classify:
 var years = [2019];
@@ -44,19 +62,20 @@ var periods = {
 
 var featureSpace = [
   'WET1_GREEN_median', 'WET1_RED_median', 'WET1_NIR_median', 'WET1_SWIR1_median', 'WET1_SWIR2_median', 'WET1_NDVI_median', 'WET1_NDWI_median',
-  'WET2_GREEN_median', 'WET2_RED_median', 'WET2_NIR_median', 'WET2_SWIR1_median', 'WET2_SWIR2_median', 'WET2_NDVI_median','WET2_NDWI_median', 
+  'WET2_GREEN_median', 'WET2_RED_median', 'WET2_NIR_median', 'WET2_SWIR1_median', 'WET2_SWIR2_median', 'WET2_NDVI_median', 'WET2_NDWI_median', 
   'DRY1_GREEN_median', 'DRY1_RED_median', 'DRY1_NIR_median', 'DRY1_SWIR1_median', 'DRY1_SWIR2_median', 'DRY1_NDVI_median', 'DRY1_NDWI_median', 
   'DRY2_GREEN_median', 'DRY2_RED_median', 'DRY2_NIR_median', 'DRY2_SWIR1_median', 'DRY2_SWIR2_median', 'DRY2_NDVI_median', 'DRY2_NDWI_median', 
   'DRY3_GREEN_median', 'DRY3_RED_median', 'DRY3_NIR_median', 'DRY3_SWIR1_median', 'DRY3_SWIR2_median', 'DRY3_NDVI_median', 'DRY3_NDWI_median',
   'WET3_GREEN_median', 'WET3_RED_median', 'WET3_NIR_median', 'WET3_SWIR1_median', 'WET3_SWIR2_median', 'WET3_NDVI_median', 'WET3_NDWI_median'
 ];
 
+// set the collection you want to use to create the mosaics:
 var imageCollection = ee.ImageCollection("LANDSAT/LC08/C01/T1_TOA");
 
-// set the collection you want to use to create the mosaics:
-var referenceCollection = ee.ImageCollection("users/your_username/MAPBIOMAS/C5/AGRICULTURE/SUGARCANE/REFERENCE_MAP");
+// set the path to you reference map that will be used for sampling
+var reference = ee.Image("users/your_username/MAPBIOMAS/C6/AGRICULTURE/SUGARCANE/REFERENCE_MAP");
 
-var gridCollection = ee.FeatureCollection("users/agrosatelite_mapbiomas/COLECAO_5/PUBLIC/GRIDS/BRASIL");
+var gridCollection = ee.FeatureCollection("users/mapbiomas1/PUBLIC/GRIDS/BRASIL_COMPLETO");
 
 var trainingSamples = 10000;
 
@@ -124,21 +143,15 @@ years.forEach(function(year){
     var filename = '' + wrs[0]+ wrs[1]  +  '_' + year;
     var mosaicFilename = filename + "_mosaic";
     
-    Map.addLayer(mosaic, {bands: ['WET1_NIR_median', 'WET1_SWIR1_median', 'WET1_RED_median'], min: 0, max: 0.5}, mosaicFilename);
+    Map.addLayer(mosaic, {bands: ['WET1_NIR_median', 'WET1_SWIR1_median', 'WET1_RED_median'], min: 0, max: 4000}, mosaicFilename);
     Map.centerObject(roi);
     
-    mosaic = mosaic.select(featureSpace).multiply(10000);
+    mosaic = mosaic.select(featureSpace);
     
     // Sampling //
-    
-    var reference = referenceCollection
-      .filterMetadata('year', 'equals', year)
-      .mosaic()
-      .clip(roi)
-      .unmask(null);
-      
+
     var train = mosaic
-      .addBands(reference.select([0], ["class"]));
+      .addBands(reference.select([0], ["class"]).unmask());
     
     var training = train.sample({
       'region': roi,
@@ -150,7 +163,7 @@ years.forEach(function(year){
     // Training // 
     
     var classifier = ee.Classifier
-      .randomForest(randomForestTrees)
+      .smileRandomForest(randomForestTrees)
       .train(training, 'class', featureSpace);
     
     // Classification //
@@ -169,19 +182,17 @@ years.forEach(function(year){
     
     // Exporting Results //
     
-    roi.evaluate(function(geometry){
-      var filename = year + '_' + wrs[0] + '_' + wrs[1];
-      
-      Export.image.toAsset({
-        image: classified.byte(), 
-        description: 'SUGARCANE_' + filename, 
-        assetId: outputCollection + '/' + filename, 
-        region: geometry, 
-        scale: 30, 
-        maxPixels: 1.0E13
-      });
-
+    var filename = year + '_' + wrs[0] + '_' + wrs[1];
+    
+    Export.image.toAsset({
+      image: classified.byte(), 
+      description: 'SUGARCANE_' + filename, 
+      assetId: outputCollection + '/' + filename, 
+      region: geometry, 
+      scale: 30, 
+      maxPixels: 1.0E13
     });
+
   });
 });
 

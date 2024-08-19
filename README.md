@@ -4,21 +4,32 @@
     <h1>Agriculture</h1>
 </div>
 
-Developed by ***Agrosatélite Geotecnologia Aplicada Ltda***.
+Developed by ***Remap Geotecnologia Ltda***.
 
 ## About
-This repository contains the scripts used in the classification of the agriculture theme, for the Collection 5 of Mapbiomas. We recommend that you read the  [Agriculture Appendix of the Algorithm Theoretical Basis Document (ATBD)](https://mapbiomas.org/download-dos-atbds), since important informations about the classification methodology can be found in there. For this collection, we have the following agriculture subclasses:
+This repository contains scripts used for the classification of Mapbiomas' Collection 9 agriculture classes. We recommend that you read the  [Agriculture Appendix of the Algorithm Theoretical Basis Document (ATBD)](https://mapbiomas.org/download-dos-atbds), since important informations about the classification methodology can be found there. For this collection, we have the following agriculture classes:
 
  - Temporary Crop
-	- Soybean (2000 - 2019)
+	- Soybean
+	- Cotton
 	- Sugar Cane
-	- Other Temporary Crop (includes soybean before 2000)
+	- Rice
+	- Other Temporary Crop
  - Perennial Crop
+	- Coffee
+	- Citrus
+	- Oil Palm
+	- Other Perennial Crop
 
 ## How to use
 
-First, you need to copy the scripts in this repository  (including those in [utils folder](./utils)) to your Google Earth Engine (**GEE**) account. Then, you can follow the instructions for every subclass in the links bellow:
+First, you need to copy the scripts in this repository  (including those in [utils folder](./utils)) to your Google Earth Engine (**GEE**) account. Then, you can follow the instructions for every class in the links bellow:
 																						 
- - [Soybean](./soybean) instructions;
- - [Sugar Cane](./sugarcane) instructions.
- - [Other Temporary and Perennial Crops](./temporary-perennial-crops) instructions;
+ - [Soybean, Cotton and Other Temporary Crops](./soybean_cotton_other_temporary_crops) instructions;
+ - [Sugar Cane](./sugarcane) instructions;
+ - [Rice](./rice) instructions;
+ - [Coffee](./coffee) instructions;
+ - [Citrus](./citrus) instructions;
+ - [Oil Palm](./oil_palm) instructions;
+ - [Other Perennial Crop](./perennial_crops) instructions.
+
