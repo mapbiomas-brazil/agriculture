@@ -1,6 +1,6 @@
 
 <div>
-    <img src='./assets/logo.png' height='auto' width='200' align='right'>
+    <img src='./assets/new_logo.png' height='auto' width='200' align='right'>
     <h1>Agriculture</h1>
 </div>
 
